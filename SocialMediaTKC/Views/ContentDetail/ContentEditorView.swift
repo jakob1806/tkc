@@ -54,6 +54,10 @@ struct ContentEditorView: View {
         _links = State(initialValue: existingItem?.links ?? "")
     }
 
+    private var availableContentTypes: [ContentType] {
+        ContentType.availableTypes(for: platform)
+    }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -69,16 +73,22 @@ struct ContentEditorView: View {
                     }
                     Picker("Plattform", selection: $platform) {
                         ForEach(Platform.allCases) { platform in
-                            Label(platform.displayName, systemImage: platform.symbol).tag(platform)
+                            Text(platform.displayName).tag(platform)
                         }
                     }
                     .pickerStyle(.navigationLink)
-                    Picker("Content-Typ", selection: $contentType) {
-                        ForEach(ContentType.allCases) { type in
-                            Text(type.displayName).tag(type)
-                        }
+                    .onChange(of: platform) { _, newPlatform in
+                        let available = ContentType.availableTypes(for: newPlatform)
+                        if !available.contains(contentType) { contentType = available.first ?? .other }
                     }
-                    .pickerStyle(.navigationLink)
+                    if availableContentTypes.count > 1 {
+                        Picker("Art", selection: $contentType) {
+                            ForEach(availableContentTypes) { type in
+                                Text(type.displayName).tag(type)
+                            }
+                        }
+                        .pickerStyle(.navigationLink)
+                    }
                     Picker("Status", selection: $status) {
                         ForEach(ContentStatus.allCases) { status in
                             Text(status.displayName).tag(status)

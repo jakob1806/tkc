@@ -43,7 +43,7 @@ enum Platform: String, Codable, CaseIterable, Identifiable {
 }
 
 enum ContentType: String, Codable, CaseIterable, Identifiable {
-    case feedPost, story, reel, tiktokVideo, short, video, communityPost, website, newsletter, other
+    case feedPost, story, reel, tiktokVideo, short, newsletter, other
 
     var id: String { rawValue }
 
@@ -54,9 +54,6 @@ enum ContentType: String, Codable, CaseIterable, Identifiable {
         case .reel: return "Reel"
         case .tiktokVideo: return "TikTok"
         case .short: return "Short"
-        case .video: return "Video"
-        case .communityPost: return "Community Post"
-        case .website: return "Website"
         case .newsletter: return "Newsletter"
         case .other: return "Sonstiges"
         }
@@ -66,11 +63,26 @@ enum ContentType: String, Codable, CaseIterable, Identifiable {
         switch self {
         case .feedPost: return "square.grid.2x2"
         case .story: return "circle.dashed"
-        case .reel, .tiktokVideo, .short, .video: return "video.fill"
-        case .communityPost: return "person.2.fill"
-        case .website: return "globe"
+        case .reel, .tiktokVideo, .short: return "video.fill"
         case .newsletter: return "envelope.fill"
         case .other: return "ellipsis.circle"
+        }
+    }
+
+    /// Plattform kodiert die Art oft schon (z.B. "Instagram Story", "YouTube Shorts") -
+    /// hier wird die Auswahl auf das eingeschränkt, was zur gewählten Plattform tatsächlich
+    /// passt, statt bei jedem Content immer die volle, größtenteils irrelevante Liste zu zeigen.
+    static func availableTypes(for platform: Platform) -> [ContentType] {
+        switch platform {
+        case .instagram: return [.feedPost]
+        case .instagramStory: return [.story]
+        case .instagramReel: return [.reel]
+        case .tiktok: return [.tiktokVideo]
+        case .youtube: return [.other]
+        case .youtubeShorts: return [.short]
+        case .facebook: return [.feedPost, .story]
+        case .whatsapp: return [.newsletter, .other]
+        case .website: return [.newsletter, .other]
         }
     }
 }
