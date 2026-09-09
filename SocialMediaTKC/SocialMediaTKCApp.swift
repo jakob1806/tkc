@@ -9,6 +9,8 @@ struct SocialMediaTKCApp: App {
         let schema = Schema([
             Concert.self, ContentItem.self, Asset.self, ContentTask.self,
             ContentTemplate.self, ContentTemplateItem.self, LibraryItem.self, Comment.self,
+            Project.self, Tour.self, TourDay.self, TourEvent.self,
+            Singer.self, CastAssignment.self,
         ])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {

@@ -63,6 +63,16 @@ struct SettingsView: View {
                 Text("Für die gemeinsame Bearbeitung im Team. Konzerte und Content-Einträge werden dann zusätzlich in Supabase gespiegelt, statt nur lokal auf diesem Gerät zu liegen. Siehe SUPABASE_SETUP.md im Repo für die Tabellen.")
             }
 
+            Section {
+                SecureField("Gemini API-Key", text: $settings.geminiAPIKey)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+            } header: {
+                Text("Chor Assistant (Gemini)")
+            } footer: {
+                Text("Der Key bleibt lokal auf dem Gerät und wird nur direkt an die Gemini-API gesendet. Kostenlosen Key unter aistudio.google.com/apikey erzeugen.")
+            }
+
             Section("Datenquelle") {
                 Text(ConcertSyncService.sourceURL.absoluteString)
                     .font(.footnote)

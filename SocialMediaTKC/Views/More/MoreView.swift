@@ -1,7 +1,8 @@
 import SwiftUI
 import SwiftData
 
-/// §26 "Mehr"-Tab: Ideen, Templates, Library, Exporte, Archiv, Plattformübersicht, Einstellungen.
+/// "Mehr"-Tab: Content Studio (bisheriger Contentplaner - jetzt nur noch ein Modul unter vielen),
+/// KI, Medien/Kontakte/Finanzen/Dokumente (Ausbaustufen), Auswertungen, Einstellungen.
 struct MoreView: View {
     @Query(sort: \ContentTemplate.title) private var templates: [ContentTemplate]
 
@@ -9,6 +10,18 @@ struct MoreView: View {
         NavigationStack {
             List {
                 Section {
+                    NavigationLink { ChorAssistantView() } label: {
+                        Label("Chor Assistant", systemImage: "sparkles")
+                    }
+                }
+
+                Section("Content Studio") {
+                    NavigationLink { ConcertListView() } label: {
+                        Label("Alle Konzerte", systemImage: "music.mic")
+                    }
+                    NavigationLink { ContentBoardView() } label: {
+                        Label("Board", systemImage: "square.grid.3x3.fill")
+                    }
                     NavigationLink { IdeasView() } label: {
                         Label("Ideen", systemImage: "lightbulb")
                     }
@@ -18,14 +31,15 @@ struct MoreView: View {
                     NavigationLink { ContentLibraryView() } label: {
                         Label("Content Library", systemImage: "books.vertical")
                     }
-                }
-                Section {
                     NavigationLink { ExportView() } label: {
                         Label("Exporte", systemImage: "square.and.arrow.up")
                     }
                     NavigationLink { ArchiveView() } label: {
                         Label("Veröffentlichungshistorie / Archiv", systemImage: "archivebox")
                     }
+                }
+
+                Section("Auswertungen") {
                     NavigationLink { PlatformOverviewView() } label: {
                         Label("Plattformübersicht", systemImage: "chart.bar")
                     }
@@ -36,6 +50,19 @@ struct MoreView: View {
                         Label("Ticket-Korrelation", systemImage: "chart.xyaxis.line")
                     }
                 }
+
+                Section {
+                    ComingSoonRow(title: "Medien", symbol: "photo.stack", detail: "Zentrales Foto-/Video-/Audioarchiv mit Rechten & Lizenzen")
+                    ComingSoonRow(title: "Kontakte (CRM)", symbol: "person.crop.rectangle.stack", detail: "Veranstalter, Agenturen, Dirigenten, Presse")
+                    ComingSoonRow(title: "Finanzen", symbol: "eurosign.circle", detail: "Reisebudgets, Projektkosten, Honorare, Spesen")
+                    ComingSoonRow(title: "Dokumente", symbol: "doc.text.magnifyingglass", detail: "Verträge, Rider, Reiseunterlagen je Projekt")
+                    ComingSoonRow(title: "Repertoire-Archiv", symbol: "music.note.list", detail: "Werke, Noten, Besetzungsanforderungen, Aufführungshistorie")
+                } header: {
+                    Text("Geplante Module")
+                } footer: {
+                    Text("Diese Bereiche sind Teil des Choir-Operations-System-Konzepts, aber noch nicht gebaut.")
+                }
+
                 Section {
                     NavigationLink { SettingsView() } label: {
                         Label("Einstellungen", systemImage: "gearshape")
@@ -44,6 +71,21 @@ struct MoreView: View {
             }
             .navigationTitle("Mehr")
         }
+    }
+}
+
+private struct ComingSoonRow: View {
+    let title: String
+    let symbol: String
+    let detail: String
+
+    var body: some View {
+        HStack {
+            Label(title, systemImage: symbol)
+            Spacer()
+            Text("geplant").font(.caption2).foregroundStyle(.tertiary)
+        }
+        .foregroundStyle(.secondary)
     }
 }
 

@@ -1,12 +1,20 @@
 import SwiftUI
 import SwiftData
 
-/// §15 Dashboard + §16 Intelligente Warnungen.
-struct TodayView: View {
+/// §15 Dashboard + §16 Intelligente Warnungen, erweitert zum persönlichen Operations-Dashboard
+/// (Choir-Operations-Konzept): zeigt zusätzlich den heutigen Tourtag, falls die App gerade
+/// während einer Reise genutzt wird.
+struct HomeView: View {
     @Query(sort: \ContentItem.date) private var allContent: [ContentItem]
     @Query(sort: \Concert.date) private var allConcerts: [Concert]
+    @Query private var allTourDays: [TourDay]
+    @State private var showingAssistant = false
 
     private let calendar = Calendar.current
+
+    private var activeTourDay: TourDay? {
+        allTourDays.first { calendar.isDateInToday($0.date) }
+    }
 
     private var todayItems: [ContentItem] {
         allContent.filter { !$0.isUnplanned && calendar.isDateInToday($0.publishTime ?? $0.date) }
@@ -53,6 +61,16 @@ struct TodayView: View {
     var body: some View {
         NavigationStack {
             List {
+                if let activeTourDay {
+                    Section("Auf Tour") {
+                        NavigationLink {
+                            LiveTourDayView(day: activeTourDay)
+                        } label: {
+                            Label("Live-Tourmodus · \(activeTourDay.cityOrLocation)", systemImage: "bus")
+                        }
+                    }
+                }
+
                 Section("Heute") {
                     if todayItems.isEmpty {
                         Text("Heute muss nichts veröffentlicht werden.").foregroundStyle(.secondary)
@@ -101,7 +119,15 @@ struct TodayView: View {
                     StatusSummaryView(items: allContent)
                 }
             }
-            .navigationTitle("Heute")
+            .navigationTitle("Home")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button { showingAssistant = true } label: { Image(systemName: "sparkles") }
+                }
+            }
+            .sheet(isPresented: $showingAssistant) {
+                ChorAssistantView()
+            }
         }
     }
 }

@@ -33,6 +33,9 @@ final class Concert {
     @Relationship(deleteRule: .nullify, inverse: \ContentItem.concert)
     var contentItems: [ContentItem] = []
 
+    /// Choir-Operations-Konzept: ein Konzert kann zu einem Projekt gehören (Produktion/Tournee).
+    var project: Project?
+
     init(
         externalId: String,
         title: String,
