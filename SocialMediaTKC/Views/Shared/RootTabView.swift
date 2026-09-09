@@ -1,15 +1,15 @@
 import SwiftUI
 
-/// Navigation gemäß Choir-Operations-System-Konzept: Home · Kalender · Projekte · Chor · Mehr.
-/// Konzerte/Content Board/Ideen/Templates/etc. sind darunter erreichbar, statt eigene Tabs zu
-/// beanspruchen - Content ist nur noch eines der Werkzeuge, nicht mehr die Hauptachse.
+/// Navigation: Home · Kalender · Projekte · Analyse · Mehr.
+/// Besetzung (Chor) ist bewusst kein eigener Tab, sondern nur eine Funktion innerhalb
+/// eines Projekts (ProjectCastView) - Verwaltung der Sänger-Stammdaten liegt unter Mehr.
 struct RootTabView: View {
     @State private var showingNewContent = false
     @State private var selectedTab: Tab = .home
     var settings = AppSettings.shared
 
     enum Tab: Hashable {
-        case home, calendar, projects, choir, more
+        case home, calendar, projects, analytics, more
     }
 
     var body: some View {
@@ -27,9 +27,9 @@ struct RootTabView: View {
                     .tabItem { Label("Projekte", systemImage: "folder.fill") }
                     .tag(Tab.projects)
 
-                ChoirRosterView()
-                    .tabItem { Label("Chor", systemImage: "person.3.fill") }
-                    .tag(Tab.choir)
+                AnalyticsView()
+                    .tabItem { Label("Analyse", systemImage: "chart.xyaxis.line") }
+                    .tag(Tab.analytics)
 
                 MoreView()
                     .tabItem { Label("Mehr", systemImage: "ellipsis.circle.fill") }

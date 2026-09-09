@@ -14,15 +14,21 @@ final class Asset {
     @Attribute(.externalStorage) var mediaData: Data?
     var mediaFilenameExtension: String?
 
+    /// Medien-Hub (Konzept "Fotos, Videos, Audio, Pressebilder, Rechte/Lizenzen").
+    var rightsHolder: String?
+    var licenseNote: String?
+
     var contentItem: ContentItem?
 
-    init(type: AssetType, title: String, fileURL: String? = nil, externalURL: String? = nil, mediaData: Data? = nil, mediaFilenameExtension: String? = nil) {
+    init(type: AssetType, title: String, fileURL: String? = nil, externalURL: String? = nil, mediaData: Data? = nil, mediaFilenameExtension: String? = nil, rightsHolder: String? = nil, licenseNote: String? = nil) {
         self.typeRaw = type.rawValue
         self.title = title
         self.fileURL = fileURL
         self.externalURL = externalURL
         self.mediaData = mediaData
         self.mediaFilenameExtension = mediaFilenameExtension
+        self.rightsHolder = rightsHolder
+        self.licenseNote = licenseNote
         self.createdAt = .now
     }
 

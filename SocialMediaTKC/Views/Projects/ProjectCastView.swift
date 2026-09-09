@@ -54,6 +54,7 @@ private struct AddSingerToProjectSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var project: Project
     let allSingers: [Singer]
+    @State private var showingNewSinger = false
 
     private var availableSingers: [Singer] {
         let assignedIDs = Set(project.castAssignments.compactMap { $0.singer?.persistentModelID })
@@ -62,30 +63,86 @@ private struct AddSingerToProjectSheet: View {
 
     var body: some View {
         NavigationStack {
-            List(availableSingers) { singer in
-                Button {
-                    let assignment = CastAssignment()
-                    assignment.singer = singer
-                    assignment.project = project
-                    context.insert(assignment)
-                    dismiss()
-                } label: {
-                    HStack {
-                        Text(singer.name).foregroundStyle(.primary)
-                        Spacer()
-                        Text(singer.voicePart.displayName).font(.caption).foregroundStyle(.secondary)
+            List {
+                Section {
+                    Button {
+                        showingNewSinger = true
+                    } label: {
+                        Label("Neuen Sänger anlegen", systemImage: "person.badge.plus")
+                    }
+                }
+                Section {
+                    ForEach(availableSingers) { singer in
+                        Button {
+                            assign(singer)
+                        } label: {
+                            HStack {
+                                Text(singer.name).foregroundStyle(.primary)
+                                Spacer()
+                                Text(singer.voicePart.displayName).font(.caption).foregroundStyle(.secondary)
+                            }
+                        }
                     }
                 }
             }
             .overlay {
                 if availableSingers.isEmpty {
-                    ContentUnavailableView("Keine Sänger verfügbar", systemImage: "person.3", description: Text("Lege Sänger unter „Chor“ an."))
+                    ContentUnavailableView("Keine weiteren Sänger verfügbar", systemImage: "person.3", description: Text("Lege oben einen neuen Sänger an."))
                 }
             }
             .navigationTitle("Sänger hinzufügen")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
+            }
+            .sheet(isPresented: $showingNewSinger) {
+                QuickNewSingerSheet { singer in
+                    assign(singer)
+                }
+            }
+        }
+    }
+
+    private func assign(_ singer: Singer) {
+        let assignment = CastAssignment()
+        assignment.singer = singer
+        assignment.project = project
+        context.insert(assignment)
+        dismiss()
+    }
+}
+
+private struct QuickNewSingerSheet: View {
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
+    let onCreate: (Singer) -> Void
+
+    @State private var name = ""
+    @State private var voicePart: VoicePart = .sopranoI
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                TextField("Name", text: $name)
+                Picker("Stimmgruppe", selection: $voicePart) {
+                    ForEach(VoicePart.allCases) { part in
+                        Text(part.displayName).tag(part)
+                    }
+                }
+            }
+            .navigationTitle("Neuer Sänger")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Abbrechen") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Anlegen") {
+                        let singer = Singer(name: name, voicePart: voicePart)
+                        context.insert(singer)
+                        onCreate(singer)
+                        dismiss()
+                    }
+                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
             }
         }
     }

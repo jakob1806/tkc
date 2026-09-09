@@ -17,6 +17,9 @@ targets:
       properties:
         UILaunchScreen: {}
         CFBundleDisplayName: TKC Content Hub
+        CFBundleDevelopmentRegion: de
+        CFBundleLocalizations: [de]
+        CFBundleAllowMixedLocalizations: false
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSAppTransportSecurity:

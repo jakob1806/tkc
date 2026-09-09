@@ -59,7 +59,7 @@ struct ContentEditorView: View {
             Form {
                 Section("Allgemein") {
                     TextField("Titel", text: $title)
-                    Toggle("Als Idee ohne Datum speichern (§20)", isOn: $isUnplanned.animation())
+                    Toggle("Als Idee ohne Datum speichern", isOn: $isUnplanned.animation())
                     if !isUnplanned {
                         DatePicker("Datum", selection: $date, displayedComponents: .date)
                         Toggle("Geplante Uhrzeit", isOn: $hasPublishTime.animation())
@@ -72,21 +72,25 @@ struct ContentEditorView: View {
                             Label(platform.displayName, systemImage: platform.symbol).tag(platform)
                         }
                     }
+                    .pickerStyle(.navigationLink)
                     Picker("Content-Typ", selection: $contentType) {
                         ForEach(ContentType.allCases) { type in
                             Text(type.displayName).tag(type)
                         }
                     }
+                    .pickerStyle(.navigationLink)
                     Picker("Status", selection: $status) {
                         ForEach(ContentStatus.allCases) { status in
                             Text(status.displayName).tag(status)
                         }
                     }
+                    .pickerStyle(.navigationLink)
                     Picker("Priorität", selection: $priority) {
                         ForEach(Priority.allCases) { priority in
                             Text(priority.displayName).tag(priority)
                         }
                     }
+                    .pickerStyle(.navigationLink)
                     TextField("Zuständige Person", text: $assignee)
                 }
 
@@ -97,6 +101,7 @@ struct ContentEditorView: View {
                             Text("\(concert.title) – \(concert.venue)").tag(Concert?.some(concert))
                         }
                     }
+                    .pickerStyle(.navigationLink)
                 }
 
                 Section("Texte") {

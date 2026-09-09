@@ -1,8 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// "Mehr"-Tab: Content Studio (bisheriger Contentplaner - jetzt nur noch ein Modul unter vielen),
-/// KI, Medien/Kontakte/Finanzen/Dokumente (Ausbaustufen), Auswertungen, Einstellungen.
+/// "Mehr"-Tab: alles, was keinen eigenen Tab braucht, klar in Gruppen sortiert.
 struct MoreView: View {
     @Query(sort: \ContentTemplate.title) private var templates: [ContentTemplate]
 
@@ -15,7 +14,7 @@ struct MoreView: View {
                     }
                 }
 
-                Section("Content Studio") {
+                Section("Konzerte & Content") {
                     NavigationLink { ConcertListView() } label: {
                         Label("Alle Konzerte", systemImage: "music.mic")
                     }
@@ -26,41 +25,45 @@ struct MoreView: View {
                         Label("Ideen", systemImage: "lightbulb")
                     }
                     NavigationLink { TemplateListView() } label: {
-                        Label("Content-Templates (\(templates.count))", systemImage: "doc.on.doc")
+                        Label("Content-Templates", systemImage: "doc.on.doc")
                     }
                     NavigationLink { ContentLibraryView() } label: {
-                        Label("Content Library", systemImage: "books.vertical")
-                    }
-                    NavigationLink { ExportView() } label: {
-                        Label("Exporte", systemImage: "square.and.arrow.up")
+                        Label("Content-Bibliothek", systemImage: "books.vertical")
                     }
                     NavigationLink { ArchiveView() } label: {
-                        Label("Veröffentlichungshistorie / Archiv", systemImage: "archivebox")
+                        Label("Archiv veröffentlichter Beiträge", systemImage: "archivebox")
+                    }
+                    NavigationLink { ExportView() } label: {
+                        Label("Exportieren", systemImage: "square.and.arrow.up")
+                    }
+                    NavigationLink { TicketCorrelationView() } label: {
+                        Label("Ticket-Auswertung", systemImage: "chart.xyaxis.line")
                     }
                 }
 
-                Section("Auswertungen") {
-                    NavigationLink { PlatformOverviewView() } label: {
-                        Label("Plattformübersicht", systemImage: "chart.bar")
+                Section("Chor & Besetzung") {
+                    NavigationLink { ChoirRosterView() } label: {
+                        Label("Sänger verwalten", systemImage: "person.3")
                     }
-                    NavigationLink { PerformanceOverviewView() } label: {
-                        Label("Performance", systemImage: "chart.line.uptrend.xyaxis")
+                }
+
+                Section("Archiv & Ressourcen") {
+                    NavigationLink { MediaLibraryView() } label: {
+                        Label("Medien", systemImage: "photo.stack")
                     }
-                    NavigationLink { TicketCorrelationView() } label: {
-                        Label("Ticket-Korrelation", systemImage: "chart.xyaxis.line")
+                    NavigationLink { DocumentsView() } label: {
+                        Label("Dokumente", systemImage: "doc.text.magnifyingglass")
                     }
                 }
 
                 Section {
-                    ComingSoonRow(title: "Medien", symbol: "photo.stack", detail: "Zentrales Foto-/Video-/Audioarchiv mit Rechten & Lizenzen")
-                    ComingSoonRow(title: "Kontakte (CRM)", symbol: "person.crop.rectangle.stack", detail: "Veranstalter, Agenturen, Dirigenten, Presse")
-                    ComingSoonRow(title: "Finanzen", symbol: "eurosign.circle", detail: "Reisebudgets, Projektkosten, Honorare, Spesen")
-                    ComingSoonRow(title: "Dokumente", symbol: "doc.text.magnifyingglass", detail: "Verträge, Rider, Reiseunterlagen je Projekt")
-                    ComingSoonRow(title: "Repertoire-Archiv", symbol: "music.note.list", detail: "Werke, Noten, Besetzungsanforderungen, Aufführungshistorie")
+                    ComingSoonRow(title: "Kontakte", symbol: "person.crop.rectangle.stack")
+                    ComingSoonRow(title: "Finanzen", symbol: "eurosign.circle")
+                    ComingSoonRow(title: "Repertoire-Archiv", symbol: "music.note.list")
                 } header: {
-                    Text("Geplante Module")
+                    Text("Noch nicht umgesetzt")
                 } footer: {
-                    Text("Diese Bereiche sind Teil des Choir-Operations-System-Konzepts, aber noch nicht gebaut.")
+                    Text("Veranstalter/Agenturen, Reisebudgets/Honorare und ein Werke-Archiv sind als spätere Ausbaustufen vorgesehen.")
                 }
 
                 Section {
@@ -77,7 +80,6 @@ struct MoreView: View {
 private struct ComingSoonRow: View {
     let title: String
     let symbol: String
-    let detail: String
 
     var body: some View {
         HStack {

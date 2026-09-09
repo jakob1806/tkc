@@ -10,7 +10,7 @@ struct SocialMediaTKCApp: App {
             Concert.self, ContentItem.self, Asset.self, ContentTask.self,
             ContentTemplate.self, ContentTemplateItem.self, LibraryItem.self, Comment.self,
             Project.self, Tour.self, TourDay.self, TourEvent.self,
-            Singer.self, CastAssignment.self,
+            Singer.self, CastAssignment.self, Document.self,
         ])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {

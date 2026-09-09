@@ -72,6 +72,7 @@ private struct NewLibraryItemSheet: View {
                         Label(category.displayName, systemImage: category.symbol).tag(category)
                     }
                 }
+                .pickerStyle(.navigationLink)
                 TextField("Titel", text: $title)
                 TextField("Wert (Hashtags, Link, Text, Name…)", text: $value, axis: .vertical)
             }

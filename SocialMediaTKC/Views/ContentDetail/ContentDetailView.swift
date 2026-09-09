@@ -95,7 +95,7 @@ struct ContentDetailView: View {
                 CommentThreadView(item: item)
             }
 
-            Section("Performance (§24)") {
+            Section("Performance") {
                 PerformanceMetricsView(item: item)
             }
         }

@@ -155,7 +155,7 @@ private struct DayDetailSheet: View {
                                 Text(concert.venue).font(.caption).foregroundStyle(.secondary)
                             }
                         } icon: {
-                            Text("🎵")
+                            Image(systemName: "music.mic").foregroundStyle(.orange)
                         }
                     }
                 }
