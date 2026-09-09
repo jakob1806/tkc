@@ -1,37 +1,47 @@
 import SwiftUI
 import SwiftData
 
-/// §26 "Mehr"-Tab. Templates (§11) sind für die MVP-Priorität funktionsfähig;
-/// Ideen/Library/Export/Archiv/Einstellungen folgen als spätere Ausbaustufen (siehe Roadmap unten).
+/// §26 "Mehr"-Tab: Ideen, Templates, Library, Exporte, Archiv, Plattformübersicht, Einstellungen.
 struct MoreView: View {
     @Query(sort: \ContentTemplate.title) private var templates: [ContentTemplate]
 
     var body: some View {
         NavigationStack {
             List {
-                Section("Templates") {
-                    NavigationLink {
-                        TemplateListView()
-                    } label: {
+                Section {
+                    NavigationLink { IdeasView() } label: {
+                        Label("Ideen", systemImage: "lightbulb")
+                    }
+                    NavigationLink { TemplateListView() } label: {
                         Label("Content-Templates (\(templates.count))", systemImage: "doc.on.doc")
                     }
+                    NavigationLink { ContentLibraryView() } label: {
+                        Label("Content Library", systemImage: "books.vertical")
+                    }
                 }
-                Section("Geplant für die nächste Ausbaustufe") {
-                    Label("Ideen (Ungeplant-Bereich)", systemImage: "lightbulb")
-                    Label("Content Library", systemImage: "books.vertical")
-                    Label("Exporte (PDF/CSV/Excel)", systemImage: "square.and.arrow.up")
-                    Label("Veröffentlichungshistorie / Archiv", systemImage: "archivebox")
-                    Label("Plattformübersicht", systemImage: "chart.bar")
-                    Label("Einstellungen", systemImage: "gearshape")
+                Section {
+                    NavigationLink { ExportView() } label: {
+                        Label("Exporte", systemImage: "square.and.arrow.up")
+                    }
+                    NavigationLink { ArchiveView() } label: {
+                        Label("Veröffentlichungshistorie / Archiv", systemImage: "archivebox")
+                    }
+                    NavigationLink { PlatformOverviewView() } label: {
+                        Label("Plattformübersicht", systemImage: "chart.bar")
+                    }
                 }
-                .foregroundStyle(.secondary)
+                Section {
+                    NavigationLink { SettingsView() } label: {
+                        Label("Einstellungen", systemImage: "gearshape")
+                    }
+                }
             }
             .navigationTitle("Mehr")
         }
     }
 }
 
-private struct TemplateListView: View {
+struct TemplateListView: View {
     @Query(sort: \ContentTemplate.title) private var templates: [ContentTemplate]
 
     var body: some View {

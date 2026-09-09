@@ -12,7 +12,7 @@ struct ContentBoardView: View {
             ScrollView(.horizontal) {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(ContentStatus.boardColumns) { status in
-                        BoardColumn(status: status, items: allItems.filter { $0.status == status })
+                        BoardColumn(status: status, items: allItems.filter { $0.status == status && !$0.isUnplanned })
                     }
                 }
                 .padding()

@@ -57,10 +57,25 @@ struct ContentDetailView: View {
                         Text(status.displayName).tag(status)
                     }
                 }
-                if item.approvalStatus == .approved {
-                    if let approvedBy = item.approvedBy { LabeledContent("Freigegeben von", value: approvedBy) }
+                .onChange(of: item.approvalStatus) { _, newValue in
+                    if newValue == .approved {
+                        item.approvedAt = .now
+                        if item.approvedBy == nil || item.approvedBy!.isEmpty {
+                            item.approvedBy = item.assignee
+                        }
+                    }
+                }
+                if item.approvalStatus == .approved || item.approvalStatus == .requested {
+                    TextField("Freigegeben von", text: Binding(
+                        get: { item.approvedBy ?? "" },
+                        set: { item.approvedBy = $0.isEmpty ? nil : $0 }
+                    ))
                     if let approvedAt = item.approvedAt { LabeledContent("Am", value: approvedAt.formatted()) }
                 }
+                TextField("Kommentar", text: Binding(
+                    get: { item.approvalComment ?? "" },
+                    set: { item.approvalComment = $0.isEmpty ? nil : $0 }
+                ), axis: .vertical)
             }
         }
         .navigationTitle(item.title)

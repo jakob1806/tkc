@@ -76,9 +76,9 @@ private struct ConcertRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
             VStack {
-                Text(concert.date.formatted(.dateTime.day()))
+                Text(concert.date.formatted(Date.FormatStyle(locale: .german).day()))
                     .font(.title2.bold())
-                Text(concert.date.formatted(.dateTime.month(.abbreviated)))
+                Text(concert.date.formatted(Date.FormatStyle(locale: .german).month(.abbreviated)))
                     .font(.caption)
                     .textCase(.uppercase)
             }

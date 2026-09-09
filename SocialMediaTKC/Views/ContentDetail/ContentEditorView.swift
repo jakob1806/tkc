@@ -10,11 +10,13 @@ struct ContentEditorView: View {
     /// Vorhandenes Item zum Bearbeiten, oder nil für Neuanlage.
     var existingItem: ContentItem?
     var concert: Concert?
+    var startAsIdea: Bool = false
 
     @State private var title: String
     @State private var date: Date
     @State private var publishTime: Date
     @State private var hasPublishTime: Bool
+    @State private var isUnplanned: Bool
     @State private var platform: Platform
     @State private var contentType: ContentType
     @State private var status: ContentStatus
@@ -29,13 +31,15 @@ struct ContentEditorView: View {
     @State private var notes: String
     @State private var links: String
 
-    init(existingItem: ContentItem? = nil, concert: Concert?) {
+    init(existingItem: ContentItem? = nil, concert: Concert?, startAsIdea: Bool = false) {
         self.existingItem = existingItem
         self.concert = concert
+        self.startAsIdea = startAsIdea
         _title = State(initialValue: existingItem?.title ?? "")
         _date = State(initialValue: existingItem?.date ?? .now)
         _publishTime = State(initialValue: existingItem?.publishTime ?? .now)
         _hasPublishTime = State(initialValue: existingItem?.publishTime != nil)
+        _isUnplanned = State(initialValue: existingItem?.isUnplanned ?? startAsIdea)
         _platform = State(initialValue: existingItem?.platform ?? .instagram)
         _contentType = State(initialValue: existingItem?.contentType ?? .feedPost)
         _status = State(initialValue: existingItem?.status ?? .idea)
@@ -55,10 +59,13 @@ struct ContentEditorView: View {
             Form {
                 Section("Allgemein") {
                     TextField("Titel", text: $title)
-                    DatePicker("Datum", selection: $date, displayedComponents: .date)
-                    Toggle("Geplante Uhrzeit", isOn: $hasPublishTime.animation())
-                    if hasPublishTime {
-                        DatePicker("Uhrzeit", selection: $publishTime, displayedComponents: .hourAndMinute)
+                    Toggle("Als Idee ohne Datum speichern (§20)", isOn: $isUnplanned.animation())
+                    if !isUnplanned {
+                        DatePicker("Datum", selection: $date, displayedComponents: .date)
+                        Toggle("Geplante Uhrzeit", isOn: $hasPublishTime.animation())
+                        if hasPublishTime {
+                            DatePicker("Uhrzeit", selection: $publishTime, displayedComponents: .hourAndMinute)
+                        }
                     }
                     Picker("Plattform", selection: $platform) {
                         ForEach(Platform.allCases) { platform in
@@ -128,11 +135,13 @@ struct ContentEditorView: View {
     }
 
     private func save() {
-        let resolvedPublishTime: Date? = hasPublishTime ? publishTime : nil
+        let resolvedPublishTime: Date? = (isUnplanned || !hasPublishTime) ? nil : publishTime
+        let resolvedDate = isUnplanned ? .now : date
         if let existingItem {
             existingItem.title = title
-            existingItem.date = date
+            existingItem.date = resolvedDate
             existingItem.publishTime = resolvedPublishTime
+            existingItem.isUnplanned = isUnplanned
             existingItem.platform = platform
             existingItem.contentType = contentType
             existingItem.status = status
@@ -151,14 +160,15 @@ struct ContentEditorView: View {
         } else {
             let item = ContentItem(
                 title: title,
-                date: date,
+                date: resolvedDate,
                 publishTime: resolvedPublishTime,
                 platform: platform,
                 contentType: contentType,
                 status: status,
                 priority: priority,
                 assignee: assignee.isEmpty ? nil : assignee,
-                concert: linkedConcert
+                concert: linkedConcert,
+                isUnplanned: isUnplanned
             )
             item.caption = caption.isEmpty ? nil : caption
             item.storyText = storyText.isEmpty ? nil : storyText

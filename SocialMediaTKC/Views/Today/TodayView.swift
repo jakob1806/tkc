@@ -9,11 +9,12 @@ struct TodayView: View {
     private let calendar = Calendar.current
 
     private var todayItems: [ContentItem] {
-        allContent.filter { calendar.isDateInToday($0.publishTime ?? $0.date) }
+        allContent.filter { !$0.isUnplanned && calendar.isDateInToday($0.publishTime ?? $0.date) }
     }
 
     private var upcomingItems: [ContentItem] {
         allContent.filter {
+            guard !$0.isUnplanned else { return false }
             let date = $0.publishTime ?? $0.date
             return date > .now && date <= calendar.date(byAdding: .day, value: 7, to: .now)!
         }

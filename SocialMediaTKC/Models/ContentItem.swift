@@ -24,6 +24,10 @@ final class ContentItem {
     var links: String?
     var publishedURL: String?
 
+    /// §20 "Ungeplant"-Bereich: Idee ohne festes Datum. `date` bleibt auf dem Erstellungsdatum
+    /// als Platzhalter, wird aber in Kalender/Board/Timeline ausgeblendet, solange dieses Flag gesetzt ist.
+    var isUnplanned: Bool
+
     var approvalStatusRaw: String
     var approvedBy: String?
     var approvedAt: Date?
@@ -54,7 +58,8 @@ final class ContentItem {
         priority: Priority = .medium,
         assignee: String? = nil,
         concert: Concert? = nil,
-        relativeOffset: RelativeOffset? = nil
+        relativeOffset: RelativeOffset? = nil,
+        isUnplanned: Bool = false
     ) {
         self.title = title
         self.date = date
@@ -64,6 +69,7 @@ final class ContentItem {
         self.statusRaw = status.rawValue
         self.priorityRaw = priority.rawValue
         self.assignee = assignee
+        self.isUnplanned = isUnplanned
         self.approvalStatusRaw = ApprovalStatus.draft.rawValue
         self.createdAt = .now
         self.updatedAt = .now

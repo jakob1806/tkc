@@ -15,7 +15,7 @@ struct RootTabView: View {
                     .tabItem { Label("Heute", systemImage: "sun.max.fill") }
                     .tag(Tab.today)
 
-                CalendarMonthView()
+                CalendarContainerView()
                     .tabItem { Label("Kalender", systemImage: "calendar") }
                     .tag(Tab.calendar)
 

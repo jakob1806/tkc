@@ -6,11 +6,11 @@ struct CalendarMonthView: View {
     @Query(sort: \ContentItem.date) private var allContent: [ContentItem]
     @Query(sort: \Concert.date) private var allConcerts: [Concert]
 
-    @State private var visibleMonth: Date = Calendar.current.startOfMonth(for: .now)
+    @State private var visibleMonth: Date = Calendar.germanCurrent.startOfMonth(for: .now)
     @State private var selectedDay: Date?
     @State private var searchText = ""
 
-    private let calendar = Calendar.current
+    private let calendar = Calendar.germanCurrent
 
     var body: some View {
         NavigationStack {
@@ -20,7 +20,7 @@ struct CalendarMonthView: View {
                 monthGrid
                 Spacer(minLength: 0)
             }
-            .navigationTitle(visibleMonth.formatted(.dateTime.month(.wide).year()))
+            .navigationTitle(visibleMonth.formatted(Date.FormatStyle(locale: .german).month(.wide).year()))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -53,7 +53,7 @@ struct CalendarMonthView: View {
                 Image(systemName: "chevron.left")
             }
             Spacer()
-            Text(visibleMonth.formatted(.dateTime.month(.wide).year()))
+            Text(visibleMonth.formatted(Date.FormatStyle(locale: .german).month(.wide).year()))
                 .font(.headline)
             Spacer()
             Button { withAnimation { visibleMonth = calendar.date(byAdding: .month, value: 1, to: visibleMonth)! } } label: {
@@ -98,7 +98,7 @@ struct CalendarMonthView: View {
     }
 
     private func items(on day: Date) -> [ContentItem] {
-        allContent.filter { calendar.isDate($0.date, inSameDayAs: day) }
+        allContent.filter { !$0.isUnplanned && calendar.isDate($0.date, inSameDayAs: day) }
             .filter { searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText) }
     }
 
@@ -201,6 +201,13 @@ private struct DayDetailSheet: View {
 }
 
 extension Calendar {
+    /// Deutsche Locale unabhängig von der Geräte-Systemsprache, da die App durchgängig auf Deutsch ausgelegt ist.
+    static var germanCurrent: Calendar {
+        var calendar = Calendar.current
+        calendar.locale = .german
+        return calendar
+    }
+
     func startOfMonth(for date: Date) -> Date {
         self.date(from: dateComponents([.year, .month], from: date)) ?? date
     }
