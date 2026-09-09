@@ -7,6 +7,7 @@ struct ContentDetailView: View {
     @Environment(\.modelContext) private var context
     @Bindable var item: ContentItem
     @State private var showingEditor = false
+    var settings = AppSettings.shared
 
     var body: some View {
         List {
@@ -52,37 +53,59 @@ struct ContentDetailView: View {
             }
 
             Section("Freigabe") {
-                Picker("Status", selection: $item.approvalStatus) {
-                    ForEach(ApprovalStatus.allCases) { status in
-                        Text(status.displayName).tag(status)
-                    }
-                }
-                .onChange(of: item.approvalStatus) { _, newValue in
-                    if newValue == .approved {
-                        item.approvedAt = .now
-                        if item.approvedBy == nil || item.approvedBy!.isEmpty {
-                            item.approvedBy = item.assignee
+                if settings.currentRole.canApprove {
+                    Picker("Status", selection: $item.approvalStatus) {
+                        ForEach(ApprovalStatus.allCases) { status in
+                            Text(status.displayName).tag(status)
                         }
                     }
+                    .onChange(of: item.approvalStatus) { _, newValue in
+                        if newValue == .approved {
+                            item.approvedAt = .now
+                            if item.approvedBy == nil || item.approvedBy!.isEmpty {
+                                item.approvedBy = settings.displayName.isEmpty ? item.assignee : settings.displayName
+                            }
+                        }
+                    }
+                } else {
+                    LabeledContent("Status", value: item.approvalStatus.displayName)
                 }
                 if item.approvalStatus == .approved || item.approvalStatus == .requested {
-                    TextField("Freigegeben von", text: Binding(
-                        get: { item.approvedBy ?? "" },
-                        set: { item.approvedBy = $0.isEmpty ? nil : $0 }
-                    ))
+                    if settings.currentRole.canApprove {
+                        TextField("Freigegeben von", text: Binding(
+                            get: { item.approvedBy ?? "" },
+                            set: { item.approvedBy = $0.isEmpty ? nil : $0 }
+                        ))
+                    } else if let approvedBy = item.approvedBy {
+                        LabeledContent("Freigegeben von", value: approvedBy)
+                    }
                     if let approvedAt = item.approvedAt { LabeledContent("Am", value: approvedAt.formatted()) }
                 }
-                TextField("Kommentar", text: Binding(
-                    get: { item.approvalComment ?? "" },
-                    set: { item.approvalComment = $0.isEmpty ? nil : $0 }
-                ), axis: .vertical)
+                if settings.currentRole.canEdit {
+                    TextField("Kommentar", text: Binding(
+                        get: { item.approvalComment ?? "" },
+                        set: { item.approvalComment = $0.isEmpty ? nil : $0 }
+                    ), axis: .vertical)
+                } else if let comment = item.approvalComment, !comment.isEmpty {
+                    Text(comment)
+                }
+            }
+
+            Section("Kommentare") {
+                CommentThreadView(item: item)
+            }
+
+            Section("Performance (§24)") {
+                PerformanceMetricsView(item: item)
             }
         }
         .navigationTitle(item.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button("Bearbeiten") { showingEditor = true }
+            if settings.currentRole.canEdit {
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Bearbeiten") { showingEditor = true }
+                }
             }
         }
         .sheet(isPresented: $showingEditor) {

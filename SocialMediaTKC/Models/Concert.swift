@@ -25,6 +25,11 @@ final class Concert {
     /// Manuelle Überschreibungen durch den Nutzer werden beim Sync respektiert (kein Feld-Reset).
     var isManuallyEdited: Bool
 
+    /// Manuell gepflegt (die Konzertseite liefert keine Verkaufszahlen über eine API):
+    /// Grundlage für die Content-Timing-Korrelation (§9-Erweiterung).
+    var ticketsSold: Int?
+    var venueCapacity: Int?
+
     @Relationship(deleteRule: .nullify, inverse: \ContentItem.concert)
     var contentItems: [ContentItem] = []
 
@@ -71,4 +76,9 @@ final class Concert {
     }
 
     var isPast: Bool { date < .now }
+
+    var occupancyRate: Double? {
+        guard let ticketsSold, let venueCapacity, venueCapacity > 0 else { return nil }
+        return Double(ticketsSold) / Double(venueCapacity)
+    }
 }

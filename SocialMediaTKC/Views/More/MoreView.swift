@@ -29,6 +29,12 @@ struct MoreView: View {
                     NavigationLink { PlatformOverviewView() } label: {
                         Label("Plattformübersicht", systemImage: "chart.bar")
                     }
+                    NavigationLink { PerformanceOverviewView() } label: {
+                        Label("Performance", systemImage: "chart.line.uptrend.xyaxis")
+                    }
+                    NavigationLink { TicketCorrelationView() } label: {
+                        Label("Ticket-Korrelation", systemImage: "chart.xyaxis.line")
+                    }
                 }
                 Section {
                     NavigationLink { SettingsView() } label: {

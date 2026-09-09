@@ -41,6 +41,36 @@ struct ConcertDetailView: View {
                 }
             }
 
+            Section {
+                HStack {
+                    Text("Verkaufte Tickets")
+                    Spacer()
+                    TextField("–", text: Binding(
+                        get: { concert.ticketsSold.map(String.init) ?? "" },
+                        set: { concert.ticketsSold = Int($0) }
+                    ))
+                    .keyboardType(.numberPad)
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 80)
+                }
+                HStack {
+                    Text("Kapazität")
+                    Spacer()
+                    TextField("–", text: Binding(
+                        get: { concert.venueCapacity.map(String.init) ?? "" },
+                        set: { concert.venueCapacity = Int($0) }
+                    ))
+                    .keyboardType(.numberPad)
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 80)
+                }
+                if let rate = concert.occupancyRate {
+                    LabeledContent("Auslastung", value: "\(Int(rate * 100))%")
+                }
+            } footer: {
+                Text("Manuell aus dem Ticketing-Report - Grundlage für die Content-Timing-Korrelation (Mehr → Ticket-Korrelation).")
+            }
+
             Section("Content rund um dieses Konzert") {
                 if sortedContent.isEmpty {
                     ContentUnavailableView("Noch kein Content geplant", systemImage: "sparkles")

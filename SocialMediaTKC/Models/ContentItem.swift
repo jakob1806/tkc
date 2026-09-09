@@ -40,6 +40,15 @@ final class ContentItem {
     var createdAt: Date
     var updatedAt: Date
 
+    // MARK: - §24 Performance (optional, manuell oder später per API befüllt)
+    var metricViews: Int?
+    var metricLikes: Int?
+    var metricComments: Int?
+    var metricShares: Int?
+    var metricSaves: Int?
+    var metricReach: Int?
+    var metricFollowerGrowth: Int?
+
     var concert: Concert?
 
     @Relationship(deleteRule: .cascade, inverse: \ContentTask.contentItem)
@@ -47,6 +56,9 @@ final class ContentItem {
 
     @Relationship(deleteRule: .cascade, inverse: \Asset.contentItem)
     var assets: [Asset] = []
+
+    @Relationship(deleteRule: .cascade, inverse: \Comment.contentItem)
+    var comments: [Comment] = []
 
     init(
         title: String,
@@ -129,5 +141,14 @@ final class ContentItem {
 
     var isLongPendingApproval: Bool {
         approvalStatus == .requested && updatedAt.timeIntervalSinceNow < -3 * 24 * 3600
+    }
+
+    var hasMetrics: Bool {
+        [metricViews, metricLikes, metricComments, metricShares, metricSaves, metricReach, metricFollowerGrowth].contains { $0 != nil }
+    }
+
+    /// Engagement-Score für einfache Vergleiche in der Performance-Auswertung (§24).
+    var engagementScore: Int {
+        (metricLikes ?? 0) + (metricComments ?? 0) + (metricShares ?? 0) + (metricSaves ?? 0)
     }
 }
