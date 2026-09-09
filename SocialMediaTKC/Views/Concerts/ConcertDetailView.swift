@@ -6,11 +6,17 @@ struct ConcertDetailView: View {
     @Environment(\.modelContext) private var context
     @Bindable var concert: Concert
     @Query private var templates: [ContentTemplate]
+    @Query private var allSocialPosts: [SocialPost]
     @State private var showingTemplatePicker = false
     @State private var showingNewContent = false
 
     private var sortedContent: [ContentItem] {
         concert.contentItems.sorted { ($0.publishTime ?? $0.date) < ($1.publishTime ?? $1.date) }
+    }
+
+    /// §17 Social Performance eines Konzerts: alle verknüpften Social Posts, je Plattform summiert.
+    private var linkedSocialPosts: [SocialPost] {
+        allSocialPosts.filter { $0.linkedConcert?.persistentModelID == concert.persistentModelID }
     }
 
     var body: some View {
@@ -92,6 +98,24 @@ struct ConcertDetailView: View {
                     showingNewContent = true
                 } label: {
                     Label("Einzelnen Content hinzufügen", systemImage: "plus")
+                }
+            }
+
+            if !linkedSocialPosts.isEmpty {
+                Section("Social Performance") {
+                    ForEach(SocialPlatform.allCases) { platform in
+                        let posts = linkedSocialPosts.filter { $0.platform == platform }
+                        if !posts.isEmpty {
+                            let views = posts.compactMap { $0.latestSnapshot?.views }.reduce(0, +)
+                            LabeledContent {
+                                Text("\(views.formatted()) Views")
+                            } label: {
+                                Label(platform.displayName, systemImage: platform.symbol).foregroundStyle(platform.color)
+                            }
+                        }
+                    }
+                    let totalViews = linkedSocialPosts.compactMap { $0.latestSnapshot?.views }.reduce(0, +)
+                    LabeledContent("Gesamt", value: "\(totalViews.formatted()) Views · \(linkedSocialPosts.count) Posts")
                 }
             }
         }

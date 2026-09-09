@@ -73,6 +73,21 @@ struct SettingsView: View {
                 Text("Der Key bleibt lokal auf dem Gerät und wird nur direkt an die Gemini-API gesendet. Kostenlosen Key unter aistudio.google.com/apikey erzeugen.")
             }
 
+            Section {
+                TextField("Backend-URL", text: $settings.socialAnalyticsBackendURL)
+                    .keyboardType(.URL)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                Stepper("Unter 48h: alle \(Int(settings.socialSyncIntervalUnder48h))h", value: $settings.socialSyncIntervalUnder48h, in: 1...24)
+                Stepper("2-7 Tage: alle \(Int(settings.socialSyncInterval2to7Days))h", value: $settings.socialSyncInterval2to7Days, in: 1...48)
+                Stepper("7-30 Tage: alle \(Int(settings.socialSyncInterval7to30Days))h", value: $settings.socialSyncInterval7to30Days, in: 6...168)
+                Stepper("Über 30 Tage: alle \(Int(settings.socialSyncIntervalOver30Days))h", value: $settings.socialSyncIntervalOver30Days, in: 24...720)
+            } header: {
+                Text("Social Analytics")
+            } footer: {
+                Text("Die vier Plattform-Connectoren (Instagram/Facebook/TikTok/YouTube) rufen kein Secret direkt auf, sondern dieses Backend. Ohne hinterlegte URL bleiben Posts/Accounts nur manuell erfassbar. Details in SOCIAL_ANALYTICS_SETUP.md.")
+            }
+
             Section("Datenquelle") {
                 Text(ConcertSyncService.sourceURL.absoluteString)
                     .font(.footnote)

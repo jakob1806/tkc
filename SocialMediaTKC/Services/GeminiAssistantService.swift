@@ -126,6 +126,26 @@ enum GeminiAssistantService {
             if count > 0 { lines.append("- \(part.displayName): \(count)") }
         }
 
+        // §21 Social AI Analyst: Zugriff auf Social-Analytics-Daten, ausschließlich auf Basis
+        // gespeicherter Snapshots - der Assistent soll nie Kennzahlen erfinden.
+        let socialPosts = try context.fetch(FetchDescriptor<SocialPost>())
+        let last30Days = Calendar.current.date(byAdding: .day, value: -30, to: .now)! ... Date.now
+        lines.append("\nSocial Media (\(socialPosts.count) Posts insgesamt):")
+        for platform in SocialPlatform.allCases {
+            let platformPosts = socialPosts.filter { $0.platform == platform }
+            guard !platformPosts.isEmpty else { continue }
+            let views = SocialAnalyticsRepository.total(.views, posts: platformPosts, range: last30Days, mode: .absolute)
+            let likes = SocialAnalyticsRepository.total(.likes, posts: platformPosts, range: last30Days, mode: .absolute)
+            lines.append("- \(platform.displayName): \(platformPosts.count) Posts, letzte 30 Tage \(views.map(String.init) ?? "keine Daten") Views, \(likes.map(String.init) ?? "keine Daten") Likes")
+        }
+        let topPosts = socialPosts.sorted { ($0.latestSnapshot?.views ?? 0) > ($1.latestSnapshot?.views ?? 0) }.prefix(10)
+        if !topPosts.isEmpty {
+            lines.append("Top-Posts nach Views:")
+            for post in topPosts {
+                lines.append("- \(post.platform.displayName) \(post.postType.displayName) \"\(post.caption ?? post.externalPostId)\" (\(post.publishedAt.formatted(date: .abbreviated, time: .omitted))): \(post.latestSnapshot?.views.map(String.init) ?? "—") Views, \(post.latestSnapshot?.likes.map(String.init) ?? "—") Likes, \(post.latestSnapshot?.comments.map(String.init) ?? "—") Kommentare, \(post.latestSnapshot?.shares.map(String.init) ?? "—") Shares")
+            }
+        }
+
         return lines.joined(separator: "\n")
     }
 }

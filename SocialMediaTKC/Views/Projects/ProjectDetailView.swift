@@ -7,7 +7,17 @@ struct ProjectDetailView: View {
     @Environment(\.modelContext) private var context
     @Bindable var project: Project
     @Query(sort: \Concert.date) private var allConcerts: [Concert]
+    @Query private var allSocialPosts: [SocialPost]
     @State private var showingAddConcert = false
+
+    /// §18 Projekt-Analytics: alle Social Posts, die entweder direkt oder über ein Konzert
+    /// dieses Projekts verknüpft sind.
+    private var linkedSocialPosts: [SocialPost] {
+        allSocialPosts.filter {
+            $0.linkedProject?.persistentModelID == project.persistentModelID ||
+            ($0.linkedConcert != nil && $0.linkedConcert?.project?.persistentModelID == project.persistentModelID)
+        }
+    }
 
     var body: some View {
         List {
@@ -77,6 +87,24 @@ struct ProjectDetailView: View {
                     } label: {
                         Text(item.title)
                     }
+                }
+            }
+
+            if !linkedSocialPosts.isEmpty {
+                Section("Social Performance") {
+                    ForEach(SocialPlatform.allCases) { platform in
+                        let posts = linkedSocialPosts.filter { $0.platform == platform }
+                        if !posts.isEmpty {
+                            let views = posts.compactMap { $0.latestSnapshot?.views }.reduce(0, +)
+                            LabeledContent {
+                                Text("\(views.formatted()) Views")
+                            } label: {
+                                Label(platform.displayName, systemImage: platform.symbol).foregroundStyle(platform.color)
+                            }
+                        }
+                    }
+                    let totalViews = linkedSocialPosts.compactMap { $0.latestSnapshot?.views }.reduce(0, +)
+                    LabeledContent("Gesamt", value: "\(totalViews.formatted()) Views · \(linkedSocialPosts.count) Posts")
                 }
             }
         }

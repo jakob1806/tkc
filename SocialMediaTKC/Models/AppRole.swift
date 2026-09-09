@@ -60,6 +60,26 @@ final class AppSettings {
         didSet { UserDefaults.standard.set(geminiAPIKey, forKey: Keys.geminiAPIKey) }
     }
 
+    /// Social Analytics (§29): URL des eigenen Backends, das die OAuth-Tokens hält und die
+    /// vier Plattform-APIs aufruft. Ohne Backend bleiben die Provider Stubs.
+    var socialAnalyticsBackendURL: String {
+        didSet { UserDefaults.standard.set(socialAnalyticsBackendURL, forKey: Keys.socialBackendURL) }
+    }
+
+    /// §5 Sync-Kadenz, in Stunden - konfigurierbar wie im Konzept gefordert.
+    var socialSyncIntervalUnder48h: Double {
+        didSet { UserDefaults.standard.set(socialSyncIntervalUnder48h, forKey: Keys.syncUnder48h) }
+    }
+    var socialSyncInterval2to7Days: Double {
+        didSet { UserDefaults.standard.set(socialSyncInterval2to7Days, forKey: Keys.sync2to7Days) }
+    }
+    var socialSyncInterval7to30Days: Double {
+        didSet { UserDefaults.standard.set(socialSyncInterval7to30Days, forKey: Keys.sync7to30Days) }
+    }
+    var socialSyncIntervalOver30Days: Double {
+        didSet { UserDefaults.standard.set(socialSyncIntervalOver30Days, forKey: Keys.syncOver30Days) }
+    }
+
     private enum Keys {
         static let role = "appSettings.role"
         static let displayName = "appSettings.displayName"
@@ -67,6 +87,11 @@ final class AppSettings {
         static let supabaseAnonKey = "appSettings.supabaseAnonKey"
         static let teamSyncEnabled = "appSettings.teamSyncEnabled"
         static let geminiAPIKey = "appSettings.geminiAPIKey"
+        static let socialBackendURL = "appSettings.socialAnalyticsBackendURL"
+        static let syncUnder48h = "appSettings.socialSyncIntervalUnder48h"
+        static let sync2to7Days = "appSettings.socialSyncInterval2to7Days"
+        static let sync7to30Days = "appSettings.socialSyncInterval7to30Days"
+        static let syncOver30Days = "appSettings.socialSyncIntervalOver30Days"
     }
 
     private init() {
@@ -77,5 +102,10 @@ final class AppSettings {
         supabaseAnonKey = defaults.string(forKey: Keys.supabaseAnonKey) ?? ""
         teamSyncEnabled = defaults.bool(forKey: Keys.teamSyncEnabled)
         geminiAPIKey = defaults.string(forKey: Keys.geminiAPIKey) ?? ""
+        socialAnalyticsBackendURL = defaults.string(forKey: Keys.socialBackendURL) ?? ""
+        socialSyncIntervalUnder48h = defaults.object(forKey: Keys.syncUnder48h) as? Double ?? 2
+        socialSyncInterval2to7Days = defaults.object(forKey: Keys.sync2to7Days) as? Double ?? 6
+        socialSyncInterval7to30Days = defaults.object(forKey: Keys.sync7to30Days) as? Double ?? 24
+        socialSyncIntervalOver30Days = defaults.object(forKey: Keys.syncOver30Days) as? Double ?? 72
     }
 }

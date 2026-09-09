@@ -11,6 +11,7 @@ struct SocialMediaTKCApp: App {
             ContentTemplate.self, ContentTemplateItem.self, LibraryItem.self, Comment.self,
             Project.self, Tour.self, TourDay.self, TourEvent.self,
             Singer.self, CastAssignment.self, Document.self,
+            SocialAccount.self, FollowerSnapshot.self, SocialPost.self, SocialMetricSnapshot.self,
         ])
         let configuration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {

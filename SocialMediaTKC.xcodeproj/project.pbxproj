@@ -10,30 +10,46 @@
 		07D564150F4FEC9E1A89D169 /* CalendarContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C276E481A1C1E1836B1343C /* CalendarContainerView.swift */; };
 		092C820319A1B25B978A8522 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D362F9015FFAB5E8995A8128 /* AnalyticsView.swift */; };
 		0BA7F6046109D5986D6C90A4 /* ContentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BDA2D451CAB34F70E2A52E /* ContentItem.swift */; };
+		0CF91E18EA738E43BDD26D5B /* SocialAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC192CDD6CD9D193FA68944 /* SocialAccount.swift */; };
+		0D395AFDEBBEBF3175E45397 /* TikTokAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3AAFC0886CFC36B0B03C07C /* TikTokAnalyticsProvider.swift */; };
 		0D9412952E96CC0625531A19 /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78D2DA058A6768EA5E2A72 /* ArchiveView.swift */; };
 		0FE6799FFCF4589857048E97 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61617BE7AF2716262B9FE9C1 /* Document.swift */; };
 		18C5D4C33B091EC8D4036AF9 /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C926DE7189CBDCDE37239F6 /* Asset.swift */; };
 		1C98E93F2C041828F04B7121 /* ChoirRosterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BA3CE731C0A29AD23AD91B /* ChoirRosterView.swift */; };
+		21C192BF739A19F687C4ABE1 /* SocialAnalyticsExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3BFD94FB16EBB5BDBB859 /* SocialAnalyticsExportView.swift */; };
 		21CE540BF48373D750BF127A /* ContentTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9022E2E7E0D58D5E49688FD /* ContentTemplate.swift */; };
+		228C817FC03A8D57C0769FCA /* SocialAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F18FE96DE89385D424BB1D8 /* SocialAnalyticsProvider.swift */; };
 		23AAE45E640CE8611AAF2974 /* LibraryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37ED15FFDCE99C858BD6E52D /* LibraryItem.swift */; };
+		260FB69956CBF40429353819 /* SocialPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A186AFE2426ABF495F3900D9 /* SocialPost.swift */; };
 		273BB9EE74AC947A39F69C8E /* CalendarWeekView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C025385318F163A36A73233B /* CalendarWeekView.swift */; };
+		2BBF6549988BC925A923E8DD /* ContentPerformanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1028D87512F3FA588DBD9892 /* ContentPerformanceView.swift */; };
 		2EC3D789DDEF31DCAD6514BF /* Singer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B1D12B5FA012BB7D8C2A05 /* Singer.swift */; };
 		3148584CAEEE5B091B75A2E8 /* DocumentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C04CD7CFCA27967548A93A6 /* DocumentsView.swift */; };
 		393FF26F6771EFDC52A48F9E /* IdeasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A596A463AF913724872EC8 /* IdeasView.swift */; };
+		3B428D1D891EBEE99CB8B35F /* MainAnalyticsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 461B8DA9053EE32AE66E8275 /* MainAnalyticsChart.swift */; };
 		3E2A738CE1BF012A73E844DB /* TicketCorrelationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B313016931047B6A60DE8 /* TicketCorrelationView.swift */; };
+		441D181129C7D83481FEE560 /* SocialPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF4CD607D2B26841D7B872B /* SocialPlatform.swift */; };
 		465ED643FEF29A143A0D82F3 /* TourDayDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C33F7525D86FCAAA2D1028B /* TourDayDetailView.swift */; };
 		496F720FA060DF89B73925EC /* ContentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE3E35DA2469AEE9175E532 /* ContentDetailView.swift */; };
 		4E03693DF5855E658898AAE4 /* ProjectCastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CC6E34C69DF461B68993761 /* ProjectCastView.swift */; };
+		541275C51938846197EAD7D1 /* InstagramAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6509909B8149948A725BE9A /* InstagramAnalyticsProvider.swift */; };
 		608DCB32EB8800590F012E38 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B1CFDD5ED0EE600670E73F /* Comment.swift */; };
 		65C81EAA034E6FB2D34945B9 /* SocialMediaTKCApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B8E5E5BE9BFFADC039A105 /* SocialMediaTKCApp.swift */; };
+		685F7C766C523BA10013B4D6 /* PlatformComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11C41C73F6F83C63EBF85DB /* PlatformComparisonView.swift */; };
 		6CA82D03BA19377AF87C2B60 /* AppRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD2867E8E50F7470D98AAF1 /* AppRole.swift */; };
 		6D14EFC888049B24450627A3 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16F83410C023765039DE59A7 /* Project.swift */; };
 		6D35795740938CDF75F12F5D /* ContentEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2682275CC5E4051500E50D71 /* ContentEditorView.swift */; };
 		6DA74B532B15FE0F1B3F2CFD /* CommentThreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25907171733105A999398F93 /* CommentThreadView.swift */; };
+		6E23451D10E6F566F540FA0B /* ManageSocialAccountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96874DEBF7437F2BA5FB7D97 /* ManageSocialAccountsView.swift */; };
+		70CFD923BBF03F5628F052C6 /* PostComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 130006ECE0F9E8CC0F6F564E /* PostComparisonView.swift */; };
+		710D95E987F5EA0D0BC342F7 /* SocialPostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B3549712CF5390059B6466 /* SocialPostDetailView.swift */; };
+		74C57D62170BF874DD74B07D /* FollowerGrowthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6ADB8C8065B9BF763B214E /* FollowerGrowthView.swift */; };
 		750ABF05B50AD933E876394D /* ContentBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF20A27DBAEB041BDA4A46C9 /* ContentBoardView.swift */; };
+		7A402476D7A1E3473D9CCC91 /* FacebookAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78C8C421E08052CD8D728D89 /* FacebookAnalyticsProvider.swift */; };
 		810130BBE620C7C26AF5522F /* ContentScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3552E009B92D368E66A81FC /* ContentScheduler.swift */; };
 		81A0D4E856C4746D8A28EA08 /* GeminiAssistantService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6E44CB7CD229515EFA1F30 /* GeminiAssistantService.swift */; };
 		86420B88748B5143FBAAF178 /* LiveTourDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02CD86943F301B4F6B6B0B8 /* LiveTourDayView.swift */; };
+		8A7B59C819ADF6EF0BE38E1D /* SocialAnalyticsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB0273ED7B54619D4D5287 /* SocialAnalyticsRepository.swift */; };
 		8AFB720E898958066BF927E6 /* Concert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2201AA81E273D175CD1BD0D8 /* Concert.swift */; };
 		934793A4CADEAD475FE6A0B3 /* ConcertListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57BC79AC6E6D9DAE067BAEE3 /* ConcertListView.swift */; };
 		99B360A15FEE479A84CC7826 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF089D3A04D5DDAF29C1967E /* Assets.xcassets */; };
@@ -46,28 +62,38 @@
 		A9C36D1CEDD71E64E33CE38D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35C8EC82776E93C7AC0D5C44 /* HomeView.swift */; };
 		AA81569FE785E5B4EFA7BD4B /* ContentTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = F897DE0967356F135808453F /* ContentTask.swift */; };
 		ADEFF3CC6496890CC0B0C455 /* TourDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264618423337BF0C0BECC6D5 /* TourDetailView.swift */; };
+		AF914AAB2DE613CF7080DF0F /* SocialAccountDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52BAAA93A1E685999E038811 /* SocialAccountDetailView.swift */; };
 		B1858C41010956258C6C143E /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C6014460B99E36724A271B /* Enums.swift */; };
 		BA728C7EE9FF163777F7AA7C /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E1AECD1853505205B165E0 /* MoreView.swift */; };
+		C0A3B5B802E354A115244947 /* SocialMetricSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE84ACE0E297AC47201F46DF /* SocialMetricSnapshot.swift */; };
 		C9886B5C85AE0EF312174EDD /* SupabaseSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3A82AC77D326ACF2F3D256C /* SupabaseSyncService.swift */; };
 		CD8C5034675251AF4BBFCA96 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6ED58F0BE9C562163C4B65 /* ExportService.swift */; };
 		D1CB12687AC779C662788970 /* AssetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23453D1DEF19E309B34970BD /* AssetListView.swift */; };
 		D3B0E3A126FBB80FB2D53D0E /* ConcertDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D465BD471664205667B7E8EC /* ConcertDetailView.swift */; };
 		D4B8F8CC11FECB17D7686086 /* CalendarMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E46DCB91AB59CE3BF92B89E /* CalendarMonthView.swift */; };
 		D85343877541174A2C585EAF /* ConcertSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D30C8D4304434FB250595FF6 /* ConcertSyncService.swift */; };
+		E0F6A0EFD1A464CBFE91ED02 /* SocialAnalyticsSyncScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49785A4AB5846BD8048D7ACC /* SocialAnalyticsSyncScheduler.swift */; };
 		E239BFCAE1FB2A09CDF83252 /* PerformanceMetricsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FC8514B3BB2FCE0D2CEB5E /* PerformanceMetricsView.swift */; };
 		E2AA2244B5CF94DB72A711F6 /* ExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A83DBA0205F49CEB25A3D0 /* ExportView.swift */; };
 		E33DA4C65F496E578BF99790 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539BD845826B0728CF249497 /* RootTabView.swift */; };
 		E5BFFA6A26BDFC90D66E54E7 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7986CEF7A493F1E1C1884A38 /* SettingsView.swift */; };
 		EA9C310E615E840B2CECA030 /* TaskChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C822B525B910885B89E834A /* TaskChecklistView.swift */; };
+		EF9932133F118E1F26C10D29 /* PlatformDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167A8D98657D6395F3734D85 /* PlatformDetailView.swift */; };
+		F442BFE2BC06FAD132C5CF20 /* YouTubeAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A08DD61220FF8C498F79C21E /* YouTubeAnalyticsProvider.swift */; };
 		F8C7D817E5D65FD19133481C /* MediaLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F388C01B03452A370B15BD9C /* MediaLibraryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		063BB749F1ECC225B7C11C6D /* Tour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tour.swift; sourceTree = "<group>"; };
+		0AE3BFD94FB16EBB5BDBB859 /* SocialAnalyticsExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialAnalyticsExportView.swift; sourceTree = "<group>"; };
 		0E46DCB91AB59CE3BF92B89E /* CalendarMonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarMonthView.swift; sourceTree = "<group>"; };
+		1028D87512F3FA588DBD9892 /* ContentPerformanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentPerformanceView.swift; sourceTree = "<group>"; };
+		130006ECE0F9E8CC0F6F564E /* PostComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostComparisonView.swift; sourceTree = "<group>"; };
+		167A8D98657D6395F3734D85 /* PlatformDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformDetailView.swift; sourceTree = "<group>"; };
 		16F83410C023765039DE59A7 /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
 		1C04CD7CFCA27967548A93A6 /* DocumentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsView.swift; sourceTree = "<group>"; };
 		1CE3E35DA2469AEE9175E532 /* ContentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentDetailView.swift; sourceTree = "<group>"; };
+		1F18FE96DE89385D424BB1D8 /* SocialAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialAnalyticsProvider.swift; sourceTree = "<group>"; };
 		2201AA81E273D175CD1BD0D8 /* Concert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Concert.swift; sourceTree = "<group>"; };
 		23453D1DEF19E309B34970BD /* AssetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetListView.swift; sourceTree = "<group>"; };
 		23BA3CE731C0A29AD23AD91B /* ChoirRosterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoirRosterView.swift; sourceTree = "<group>"; };
@@ -77,11 +103,18 @@
 		2682275CC5E4051500E50D71 /* ContentEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentEditorView.swift; sourceTree = "<group>"; };
 		2C276E481A1C1E1836B1343C /* CalendarContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarContainerView.swift; sourceTree = "<group>"; };
 		2C926DE7189CBDCDE37239F6 /* Asset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
+		2DF4CD607D2B26841D7B872B /* SocialPlatform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialPlatform.swift; sourceTree = "<group>"; };
 		35085E4AEA540D4155241028 /* ProjectDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectDetailView.swift; sourceTree = "<group>"; };
 		35C8EC82776E93C7AC0D5C44 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		37ED15FFDCE99C858BD6E52D /* LibraryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryItem.swift; sourceTree = "<group>"; };
+		3B6ADB8C8065B9BF763B214E /* FollowerGrowthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FollowerGrowthView.swift; sourceTree = "<group>"; };
+		3BC192CDD6CD9D193FA68944 /* SocialAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialAccount.swift; sourceTree = "<group>"; };
+		461B8DA9053EE32AE66E8275 /* MainAnalyticsChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAnalyticsChart.swift; sourceTree = "<group>"; };
+		49785A4AB5846BD8048D7ACC /* SocialAnalyticsSyncScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialAnalyticsSyncScheduler.swift; sourceTree = "<group>"; };
+		49EB0273ED7B54619D4D5287 /* SocialAnalyticsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialAnalyticsRepository.swift; sourceTree = "<group>"; };
 		4C822B525B910885B89E834A /* TaskChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskChecklistView.swift; sourceTree = "<group>"; };
 		51BDA2D451CAB34F70E2A52E /* ContentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentItem.swift; sourceTree = "<group>"; };
+		52BAAA93A1E685999E038811 /* SocialAccountDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialAccountDetailView.swift; sourceTree = "<group>"; };
 		539BD845826B0728CF249497 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
 		57B1D12B5FA012BB7D8C2A05 /* Singer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Singer.swift; sourceTree = "<group>"; };
 		57BC79AC6E6D9DAE067BAEE3 /* ConcertListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcertListView.swift; sourceTree = "<group>"; };
@@ -92,15 +125,22 @@
 		6DD2867E8E50F7470D98AAF1 /* AppRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRole.swift; sourceTree = "<group>"; };
 		747417382DCFAAE9C4C63126 /* ChorAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChorAssistantView.swift; sourceTree = "<group>"; };
 		758B1885B88C84314C18CAE4 /* SingerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingerDetailView.swift; sourceTree = "<group>"; };
+		78C8C421E08052CD8D728D89 /* FacebookAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacebookAnalyticsProvider.swift; sourceTree = "<group>"; };
 		7986CEF7A493F1E1C1884A38 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		7CC6E34C69DF461B68993761 /* ProjectCastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectCastView.swift; sourceTree = "<group>"; };
+		87B3549712CF5390059B6466 /* SocialPostDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialPostDetailView.swift; sourceTree = "<group>"; };
 		88B1CFDD5ED0EE600670E73F /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		8E6E44CB7CD229515EFA1F30 /* GeminiAssistantService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeminiAssistantService.swift; sourceTree = "<group>"; };
 		91E503C7E341717EAAB24ADF /* ProjectListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectListView.swift; sourceTree = "<group>"; };
+		96874DEBF7437F2BA5FB7D97 /* ManageSocialAccountsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageSocialAccountsView.swift; sourceTree = "<group>"; };
 		98FC8514B3BB2FCE0D2CEB5E /* PerformanceMetricsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMetricsView.swift; sourceTree = "<group>"; };
 		9D78D2DA058A6768EA5E2A72 /* ArchiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveView.swift; sourceTree = "<group>"; };
+		A08DD61220FF8C498F79C21E /* YouTubeAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeAnalyticsProvider.swift; sourceTree = "<group>"; };
+		A11C41C73F6F83C63EBF85DB /* PlatformComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlatformComparisonView.swift; sourceTree = "<group>"; };
+		A186AFE2426ABF495F3900D9 /* SocialPost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialPost.swift; sourceTree = "<group>"; };
 		A1C6014460B99E36724A271B /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		A9022E2E7E0D58D5E49688FD /* ContentTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTemplate.swift; sourceTree = "<group>"; };
+		AE84ACE0E297AC47201F46DF /* SocialMetricSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialMetricSnapshot.swift; sourceTree = "<group>"; };
 		B4E1AECD1853505205B165E0 /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
 		B55B313016931047B6A60DE8 /* TicketCorrelationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicketCorrelationView.swift; sourceTree = "<group>"; };
 		C025385318F163A36A73233B /* CalendarWeekView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarWeekView.swift; sourceTree = "<group>"; };
@@ -113,9 +153,11 @@
 		D465BD471664205667B7E8EC /* ConcertDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcertDetailView.swift; sourceTree = "<group>"; };
 		E1B60AE2E1ACAE76ACC3A663 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E3A82AC77D326ACF2F3D256C /* SupabaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncService.swift; sourceTree = "<group>"; };
+		E6509909B8149948A725BE9A /* InstagramAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramAnalyticsProvider.swift; sourceTree = "<group>"; };
 		EF20A27DBAEB041BDA4A46C9 /* ContentBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBoardView.swift; sourceTree = "<group>"; };
 		F02CD86943F301B4F6B6B0B8 /* LiveTourDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTourDayView.swift; sourceTree = "<group>"; };
 		F388C01B03452A370B15BD9C /* MediaLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaLibraryView.swift; sourceTree = "<group>"; };
+		F3AAFC0886CFC36B0B03C07C /* TikTokAnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TikTokAnalyticsProvider.swift; sourceTree = "<group>"; };
 		F897DE0967356F135808453F /* ContentTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentTask.swift; sourceTree = "<group>"; };
 		FF089D3A04D5DDAF29C1967E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -137,8 +179,23 @@
 				CB6ED58F0BE9C562163C4B65 /* ExportService.swift */,
 				8E6E44CB7CD229515EFA1F30 /* GeminiAssistantService.swift */,
 				E3A82AC77D326ACF2F3D256C /* SupabaseSyncService.swift */,
+				0B5BEFC8535771CFB7F4FA9B /* SocialAnalytics */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		0B5BEFC8535771CFB7F4FA9B /* SocialAnalytics */ = {
+			isa = PBXGroup;
+			children = (
+				1F18FE96DE89385D424BB1D8 /* SocialAnalyticsProvider.swift */,
+				49EB0273ED7B54619D4D5287 /* SocialAnalyticsRepository.swift */,
+				49785A4AB5846BD8048D7ACC /* SocialAnalyticsSyncScheduler.swift */,
+				563C501C0DE10845F631AE8A /* Facebook */,
+				FB9F57D4D229FBD12F34CFAA /* Instagram */,
+				208FFD2AEA175DA694E19B69 /* TikTok */,
+				FA0D62B2486646AA1BE729FB /* YouTube */,
+			);
+			path = SocialAnalytics;
 			sourceTree = "<group>";
 		};
 		197AD98D63A33979B381A8BA /* Assistant */ = {
@@ -155,6 +212,14 @@
 				35C8EC82776E93C7AC0D5C44 /* HomeView.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		208FFD2AEA175DA694E19B69 /* TikTok */ = {
+			isa = PBXGroup;
+			children = (
+				F3AAFC0886CFC36B0B03C07C /* TikTokAnalyticsProvider.swift */,
+			);
+			path = TikTok;
 			sourceTree = "<group>";
 		};
 		3278567EDBE27F5FCB5044EE /* Products */ = {
@@ -208,6 +273,22 @@
 			path = ContentDetail;
 			sourceTree = "<group>";
 		};
+		563C501C0DE10845F631AE8A /* Facebook */ = {
+			isa = PBXGroup;
+			children = (
+				78C8C421E08052CD8D728D89 /* FacebookAnalyticsProvider.swift */,
+			);
+			path = Facebook;
+			sourceTree = "<group>";
+		};
+		59D287599B5C4DD597CDA080 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				461B8DA9053EE32AE66E8275 /* MainAnalyticsChart.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		5A79BE2E928F025AE4FBEF22 /* Media */ = {
 			isa = PBXGroup;
 			children = (
@@ -247,6 +328,17 @@
 			path = Documents;
 			sourceTree = "<group>";
 		};
+		7C2070113256E41A87036F80 /* SocialAnalytics */ = {
+			isa = PBXGroup;
+			children = (
+				3BC192CDD6CD9D193FA68944 /* SocialAccount.swift */,
+				AE84ACE0E297AC47201F46DF /* SocialMetricSnapshot.swift */,
+				2DF4CD607D2B26841D7B872B /* SocialPlatform.swift */,
+				A186AFE2426ABF495F3900D9 /* SocialPost.swift */,
+			);
+			path = SocialAnalytics;
+			sourceTree = "<group>";
+		};
 		B68215E35BEC1E4C89ACBC6F /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,6 +371,16 @@
 			isa = PBXGroup;
 			children = (
 				D362F9015FFAB5E8995A8128 /* AnalyticsView.swift */,
+				1028D87512F3FA588DBD9892 /* ContentPerformanceView.swift */,
+				3B6ADB8C8065B9BF763B214E /* FollowerGrowthView.swift */,
+				96874DEBF7437F2BA5FB7D97 /* ManageSocialAccountsView.swift */,
+				A11C41C73F6F83C63EBF85DB /* PlatformComparisonView.swift */,
+				167A8D98657D6395F3734D85 /* PlatformDetailView.swift */,
+				130006ECE0F9E8CC0F6F564E /* PostComparisonView.swift */,
+				52BAAA93A1E685999E038811 /* SocialAccountDetailView.swift */,
+				0AE3BFD94FB16EBB5BDBB859 /* SocialAnalyticsExportView.swift */,
+				87B3549712CF5390059B6466 /* SocialPostDetailView.swift */,
+				59D287599B5C4DD597CDA080 /* Components */,
 			);
 			path = Analytics;
 			sourceTree = "<group>";
@@ -317,6 +419,7 @@
 				16F83410C023765039DE59A7 /* Project.swift */,
 				57B1D12B5FA012BB7D8C2A05 /* Singer.swift */,
 				063BB749F1ECC225B7C11C6D /* Tour.swift */,
+				7C2070113256E41A87036F80 /* SocialAnalytics */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -332,6 +435,22 @@
 				264618423337BF0C0BECC6D5 /* TourDetailView.swift */,
 			);
 			path = Projects;
+			sourceTree = "<group>";
+		};
+		FA0D62B2486646AA1BE729FB /* YouTube */ = {
+			isa = PBXGroup;
+			children = (
+				A08DD61220FF8C498F79C21E /* YouTubeAnalyticsProvider.swift */,
+			);
+			path = YouTube;
+			sourceTree = "<group>";
+		};
+		FB9F57D4D229FBD12F34CFAA /* Instagram */ = {
+			isa = PBXGroup;
+			children = (
+				E6509909B8149948A725BE9A /* InstagramAnalyticsProvider.swift */,
+			);
+			path = Instagram;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -426,6 +545,7 @@
 				6D35795740938CDF75F12F5D /* ContentEditorView.swift in Sources */,
 				0BA7F6046109D5986D6C90A4 /* ContentItem.swift in Sources */,
 				A2BB0328FD5C3EC3585D0442 /* ContentLibraryView.swift in Sources */,
+				2BBF6549988BC925A923E8DD /* ContentPerformanceView.swift in Sources */,
 				810130BBE620C7C26AF5522F /* ContentScheduler.swift in Sources */,
 				AA81569FE785E5B4EFA7BD4B /* ContentTask.swift in Sources */,
 				21CE540BF48373D750BF127A /* ContentTemplate.swift in Sources */,
@@ -434,14 +554,22 @@
 				B1858C41010956258C6C143E /* Enums.swift in Sources */,
 				CD8C5034675251AF4BBFCA96 /* ExportService.swift in Sources */,
 				E2AA2244B5CF94DB72A711F6 /* ExportView.swift in Sources */,
+				7A402476D7A1E3473D9CCC91 /* FacebookAnalyticsProvider.swift in Sources */,
+				74C57D62170BF874DD74B07D /* FollowerGrowthView.swift in Sources */,
 				81A0D4E856C4746D8A28EA08 /* GeminiAssistantService.swift in Sources */,
 				A9C36D1CEDD71E64E33CE38D /* HomeView.swift in Sources */,
 				393FF26F6771EFDC52A48F9E /* IdeasView.swift in Sources */,
+				541275C51938846197EAD7D1 /* InstagramAnalyticsProvider.swift in Sources */,
 				23AAE45E640CE8611AAF2974 /* LibraryItem.swift in Sources */,
 				86420B88748B5143FBAAF178 /* LiveTourDayView.swift in Sources */,
+				3B428D1D891EBEE99CB8B35F /* MainAnalyticsChart.swift in Sources */,
+				6E23451D10E6F566F540FA0B /* ManageSocialAccountsView.swift in Sources */,
 				F8C7D817E5D65FD19133481C /* MediaLibraryView.swift in Sources */,
 				BA728C7EE9FF163777F7AA7C /* MoreView.swift in Sources */,
 				E239BFCAE1FB2A09CDF83252 /* PerformanceMetricsView.swift in Sources */,
+				685F7C766C523BA10013B4D6 /* PlatformComparisonView.swift in Sources */,
+				EF9932133F118E1F26C10D29 /* PlatformDetailView.swift in Sources */,
+				70CFD923BBF03F5628F052C6 /* PostComparisonView.swift in Sources */,
 				6D14EFC888049B24450627A3 /* Project.swift in Sources */,
 				4E03693DF5855E658898AAE4 /* ProjectCastView.swift in Sources */,
 				9F2319D4F9E1A462BFBA9589 /* ProjectDetailView.swift in Sources */,
@@ -450,13 +578,25 @@
 				E5BFFA6A26BDFC90D66E54E7 /* SettingsView.swift in Sources */,
 				2EC3D789DDEF31DCAD6514BF /* Singer.swift in Sources */,
 				A263CBA06301ABEB020C1122 /* SingerDetailView.swift in Sources */,
+				0CF91E18EA738E43BDD26D5B /* SocialAccount.swift in Sources */,
+				AF914AAB2DE613CF7080DF0F /* SocialAccountDetailView.swift in Sources */,
+				21C192BF739A19F687C4ABE1 /* SocialAnalyticsExportView.swift in Sources */,
+				228C817FC03A8D57C0769FCA /* SocialAnalyticsProvider.swift in Sources */,
+				8A7B59C819ADF6EF0BE38E1D /* SocialAnalyticsRepository.swift in Sources */,
+				E0F6A0EFD1A464CBFE91ED02 /* SocialAnalyticsSyncScheduler.swift in Sources */,
 				65C81EAA034E6FB2D34945B9 /* SocialMediaTKCApp.swift in Sources */,
+				C0A3B5B802E354A115244947 /* SocialMetricSnapshot.swift in Sources */,
+				441D181129C7D83481FEE560 /* SocialPlatform.swift in Sources */,
+				260FB69956CBF40429353819 /* SocialPost.swift in Sources */,
+				710D95E987F5EA0D0BC342F7 /* SocialPostDetailView.swift in Sources */,
 				C9886B5C85AE0EF312174EDD /* SupabaseSyncService.swift in Sources */,
 				EA9C310E615E840B2CECA030 /* TaskChecklistView.swift in Sources */,
 				3E2A738CE1BF012A73E844DB /* TicketCorrelationView.swift in Sources */,
+				0D395AFDEBBEBF3175E45397 /* TikTokAnalyticsProvider.swift in Sources */,
 				9D752A28A036B253BA78CD96 /* Tour.swift in Sources */,
 				465ED643FEF29A143A0D82F3 /* TourDayDetailView.swift in Sources */,
 				ADEFF3CC6496890CC0B0C455 /* TourDetailView.swift in Sources */,
+				F442BFE2BC06FAD132C5CF20 /* YouTubeAnalyticsProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

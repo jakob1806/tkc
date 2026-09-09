@@ -6,8 +6,14 @@ import SwiftData
 struct ContentDetailView: View {
     @Environment(\.modelContext) private var context
     @Bindable var item: ContentItem
+    @Query private var allSocialPosts: [SocialPost]
     @State private var showingEditor = false
     var settings = AppSettings.shared
+
+    /// §16 Contentplan-Verknüpfung: der Social Post, der auf diesen Content-Eintrag verweist.
+    private var linkedSocialPost: SocialPost? {
+        allSocialPosts.first { $0.linkedContentItem?.persistentModelID == item.persistentModelID }
+    }
 
     var body: some View {
         List {
@@ -96,7 +102,29 @@ struct ContentDetailView: View {
             }
 
             Section("Performance") {
-                PerformanceMetricsView(item: item)
+                if let linkedSocialPost {
+                    NavigationLink {
+                        SocialPostDetailView(post: linkedSocialPost)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Label(linkedSocialPost.platform.displayName, systemImage: linkedSocialPost.platform.symbol)
+                                .foregroundStyle(linkedSocialPost.platform.color)
+                            HStack(spacing: 12) {
+                                Text("Views: \(linkedSocialPost.latestSnapshot?.views.map { $0.formatted() } ?? "—")")
+                                Text("Likes: \(linkedSocialPost.latestSnapshot?.likes.map { $0.formatted() } ?? "—")")
+                            }
+                            .font(.caption).foregroundStyle(.secondary)
+                            if let lastSync = linkedSocialPost.latestSnapshot?.capturedAt {
+                                Text("Letzte Synchronisierung: \(lastSync.formatted(date: .omitted, time: .shortened))")
+                                    .font(.caption2).foregroundStyle(.tertiary)
+                            }
+                        }
+                    }
+                } else {
+                    Text("Noch kein Social Post verknüpft. Verknüpfe einen Post unter Analytics → Post-Detail → Verknüpfung, um hier die echte Performance zu sehen.")
+                        .font(.caption).foregroundStyle(.secondary)
+                    PerformanceMetricsView(item: item)
+                }
             }
         }
         .navigationTitle(item.title)
