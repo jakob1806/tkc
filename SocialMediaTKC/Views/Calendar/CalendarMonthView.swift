@@ -9,6 +9,8 @@ struct CalendarMonthView: View {
     @State private var visibleMonth: Date = Calendar.germanCurrent.startOfMonth(for: .now)
     @State private var selectedDay: Date?
     @State private var searchText = ""
+    @State private var platformFilter: Platform?
+    @State private var statusFilter: ContentStatus?
 
     private let calendar = Calendar.germanCurrent
 
@@ -28,9 +30,27 @@ struct CalendarMonthView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        Label("Filter folgen in Kürze", systemImage: "line.3.horizontal.decrease.circle")
+                        Menu("Plattform") {
+                            Button("Alle") { platformFilter = nil }
+                            ForEach(Platform.allCases) { platform in
+                                Button(platform.displayName) { platformFilter = platform }
+                            }
+                        }
+                        Menu("Status") {
+                            Button("Alle") { statusFilter = nil }
+                            ForEach(ContentStatus.allCases) { status in
+                                Button(status.displayName) { statusFilter = status }
+                            }
+                        }
+                        if platformFilter != nil || statusFilter != nil {
+                            Divider()
+                            Button("Filter zurücksetzen", role: .destructive) {
+                                platformFilter = nil
+                                statusFilter = nil
+                            }
+                        }
                     } label: {
-                        Image(systemName: "line.3.horizontal.decrease.circle")
+                        Image(systemName: platformFilter != nil || statusFilter != nil ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
                     }
                 }
             }
@@ -100,6 +120,8 @@ struct CalendarMonthView: View {
     private func items(on day: Date) -> [ContentItem] {
         allContent.filter { !$0.isUnplanned && calendar.isDate($0.date, inSameDayAs: day) }
             .filter { searchText.isEmpty || $0.title.localizedCaseInsensitiveContains(searchText) }
+            .filter { platformFilter == nil || $0.platform == platformFilter }
+            .filter { statusFilter == nil || $0.status == statusFilter }
     }
 
     private func concerts(on day: Date) -> [Concert] {
@@ -194,7 +216,7 @@ private struct DayDetailSheet: View {
                 }
             }
             .sheet(isPresented: $showingNewContent) {
-                ContentEditorView(concert: concerts.first)
+                ContentEditorView(concert: concerts.first, initialDate: day)
             }
         }
     }

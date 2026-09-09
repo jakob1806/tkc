@@ -31,18 +31,18 @@ struct ContentEditorView: View {
     @State private var notes: String
     @State private var links: String
 
-    init(existingItem: ContentItem? = nil, concert: Concert?, startAsIdea: Bool = false) {
+    init(existingItem: ContentItem? = nil, concert: Concert?, startAsIdea: Bool = false, initialStatus: ContentStatus? = nil, initialDate: Date? = nil) {
         self.existingItem = existingItem
         self.concert = concert
         self.startAsIdea = startAsIdea
         _title = State(initialValue: existingItem?.title ?? "")
-        _date = State(initialValue: existingItem?.date ?? .now)
+        _date = State(initialValue: existingItem?.date ?? initialDate ?? .now)
         _publishTime = State(initialValue: existingItem?.publishTime ?? .now)
         _hasPublishTime = State(initialValue: existingItem?.publishTime != nil)
         _isUnplanned = State(initialValue: existingItem?.isUnplanned ?? startAsIdea)
         _platform = State(initialValue: existingItem?.platform ?? .instagram)
         _contentType = State(initialValue: existingItem?.contentType ?? .feedPost)
-        _status = State(initialValue: existingItem?.status ?? .idea)
+        _status = State(initialValue: existingItem?.status ?? initialStatus ?? .idea)
         _priority = State(initialValue: existingItem?.priority ?? .medium)
         _assignee = State(initialValue: existingItem?.assignee ?? "")
         _linkedConcert = State(initialValue: existingItem?.concert ?? concert)
@@ -149,8 +149,19 @@ struct ContentEditorView: View {
         }
     }
 
+    /// Der Uhrzeit-Picker zeigt nur Stunde/Minute an, ändert intern aber ein volles `Date` -
+    /// dessen Tag bliebe sonst auf dem Erstellungstag stehen, statt dem gewählten `date` zu
+    /// folgen. Hier werden Jahr/Monat/Tag von `date` mit Stunde/Minute von `publishTime` zusammengeführt.
+    private func combinedPublishTime() -> Date {
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: date)
+        let timeComponents = Calendar.current.dateComponents([.hour, .minute], from: publishTime)
+        components.hour = timeComponents.hour
+        components.minute = timeComponents.minute
+        return Calendar.current.date(from: components) ?? date
+    }
+
     private func save() {
-        let resolvedPublishTime: Date? = (isUnplanned || !hasPublishTime) ? nil : publishTime
+        let resolvedPublishTime: Date? = (isUnplanned || !hasPublishTime) ? nil : combinedPublishTime()
         let resolvedDate = isUnplanned ? .now : date
         if let existingItem {
             existingItem.title = title

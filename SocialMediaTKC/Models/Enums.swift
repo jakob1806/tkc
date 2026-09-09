@@ -1,19 +1,38 @@
 import SwiftUI
 
 enum Platform: String, Codable, CaseIterable, Identifiable {
-    case instagram, instagramStory, instagramReel, tiktok, youtube, youtubeShorts, facebook, whatsapp, website
+    /// Instagram und Facebook laufen für die Contentplanung bewusst als eine Plattform,
+    /// weil ein Beitrag über Meta praktisch immer 1:1 auf beiden landet (anders als im
+    /// Social-Analytics-Modul, wo Post-Typen und Insights sich unterscheiden und die
+    /// beiden deshalb getrennt bleiben).
+    case instagram, instagramStory, instagramReel, tiktok, youtube, youtubeShorts, whatsapp, website
+
+    /// Alte gespeicherte Werte ("facebook") fallen automatisch auf `.instagram` zurück.
+    init?(rawValue: String) {
+        switch rawValue {
+        case "instagram": self = .instagram
+        case "instagramStory": self = .instagramStory
+        case "instagramReel": self = .instagramReel
+        case "tiktok": self = .tiktok
+        case "youtube": self = .youtube
+        case "youtubeShorts": self = .youtubeShorts
+        case "whatsapp": self = .whatsapp
+        case "website": self = .website
+        case "facebook": self = .instagram
+        default: return nil
+        }
+    }
 
     var id: String { rawValue }
 
     var displayName: String {
         switch self {
-        case .instagram: return "Instagram"
+        case .instagram: return "Instagram & Facebook"
         case .instagramStory: return "Instagram Story"
         case .instagramReel: return "Instagram Reel"
         case .tiktok: return "TikTok"
         case .youtube: return "YouTube"
         case .youtubeShorts: return "YouTube Shorts"
-        case .facebook: return "Facebook"
         case .whatsapp: return "WhatsApp-Kanal"
         case .website: return "Website"
         }
@@ -24,7 +43,6 @@ enum Platform: String, Codable, CaseIterable, Identifiable {
         case .instagram, .instagramStory, .instagramReel: return "camera.fill"
         case .tiktok: return "music.note"
         case .youtube, .youtubeShorts: return "play.rectangle.fill"
-        case .facebook: return "f.circle.fill"
         case .whatsapp: return "message.fill"
         case .website: return "globe"
         }
@@ -35,7 +53,6 @@ enum Platform: String, Codable, CaseIterable, Identifiable {
         case .instagram, .instagramStory, .instagramReel: return .pink
         case .tiktok: return .black
         case .youtube, .youtubeShorts: return .red
-        case .facebook: return .blue
         case .whatsapp: return .green
         case .website: return .indigo
         }
@@ -80,7 +97,6 @@ enum ContentType: String, Codable, CaseIterable, Identifiable {
         case .tiktok: return [.tiktokVideo]
         case .youtube: return [.other]
         case .youtubeShorts: return [.short]
-        case .facebook: return [.feedPost, .story]
         case .whatsapp: return [.newsletter, .other]
         case .website: return [.newsletter, .other]
         }

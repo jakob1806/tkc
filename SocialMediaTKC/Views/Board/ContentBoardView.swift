@@ -1,23 +1,31 @@
 import SwiftUI
 import SwiftData
 
-/// §8 Content Board mit Kanban-Spalten. Karten werden per Menü zwischen Spalten verschoben
-/// (Drag & Drop zwischen Spalten ist auf iOS ohne Multi-Window-Drop-Target unzuverlässig,
-/// daher zusätzlich per Context-Menu/Swipe - robuster für den täglichen Gebrauch).
+/// §8 Content Board mit Kanban-Spalten. Karten werden per Swipe (schnell, ein Schritt
+/// vor/zurück) oder Kontextmenü (beliebiger Zielstatus) verschoben - echtes Drag & Drop
+/// zwischen ScrollViews ist auf iOS ohne Multi-Window-Drop-Target unzuverlässig.
 struct ContentBoardView: View {
     @Query(sort: \ContentItem.date) private var allItems: [ContentItem]
+    @State private var newContentStatus: ContentStatus?
 
     var body: some View {
         NavigationStack {
             ScrollView(.horizontal) {
                 HStack(alignment: .top, spacing: 12) {
                     ForEach(ContentStatus.boardColumns) { status in
-                        BoardColumn(status: status, items: allItems.filter { $0.status == status && !$0.isUnplanned })
+                        BoardColumn(
+                            status: status,
+                            items: allItems.filter { $0.status == status && !$0.isUnplanned },
+                            onAdd: { newContentStatus = status }
+                        )
                     }
                 }
                 .padding()
             }
             .navigationTitle("Board")
+            .sheet(item: $newContentStatus) { status in
+                ContentEditorView(concert: nil, initialStatus: status)
+            }
         }
     }
 }
@@ -26,6 +34,7 @@ private struct BoardColumn: View {
     @Environment(\.modelContext) private var context
     let status: ContentStatus
     let items: [ContentItem]
+    let onAdd: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -33,6 +42,15 @@ private struct BoardColumn: View {
                 Circle().fill(status.color).frame(width: 8, height: 8)
                 Text(status.displayName).font(.headline)
                 Text("\(items.count)").font(.caption).foregroundStyle(.secondary)
+                Spacer()
+                Button {
+                    onAdd()
+                } label: {
+                    Image(systemName: "plus.circle.fill").foregroundStyle(.secondary)
+                }
+            }
+            if items.isEmpty {
+                Text("Keine Einträge").font(.caption).foregroundStyle(.tertiary).padding(.top, 4)
             }
             ScrollView {
                 VStack(spacing: 8) {
@@ -45,9 +63,29 @@ private struct BoardColumn: View {
                         .buttonStyle(.plain)
                         .contextMenu {
                             Menu("Verschieben nach") {
-                                ForEach(ContentStatus.allCases) { target in
+                                ForEach(ContentStatus.allCases.filter { $0 != status }) { target in
                                     Button(target.displayName) { item.status = target }
                                 }
+                            }
+                        }
+                        .swipeActions(edge: .trailing) {
+                            if let next = ContentStatus.boardColumns.next(after: status) {
+                                Button {
+                                    item.status = next
+                                } label: {
+                                    Label(next.displayName, systemImage: "arrow.right")
+                                }
+                                .tint(next.color)
+                            }
+                        }
+                        .swipeActions(edge: .leading) {
+                            if let previous = ContentStatus.boardColumns.previous(before: status) {
+                                Button {
+                                    item.status = previous
+                                } label: {
+                                    Label(previous.displayName, systemImage: "arrow.left")
+                                }
+                                .tint(previous.color)
                             }
                         }
                     }
@@ -60,6 +98,18 @@ private struct BoardColumn: View {
     }
 }
 
+private extension Array where Element == ContentStatus {
+    func next(after status: ContentStatus) -> ContentStatus? {
+        guard let index = firstIndex(of: status), index + 1 < count else { return nil }
+        return self[index + 1]
+    }
+
+    func previous(before status: ContentStatus) -> ContentStatus? {
+        guard let index = firstIndex(of: status), index > 0 else { return nil }
+        return self[index - 1]
+    }
+}
+
 private struct BoardCard: View {
     let item: ContentItem
 
@@ -67,7 +117,7 @@ private struct BoardCard: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Image(systemName: item.platform.symbol).foregroundStyle(item.platform.color)
-                Text(item.platform.displayName).font(.caption).foregroundStyle(.secondary)
+                Text(item.platform.displayName).font(.caption).foregroundStyle(.secondary).lineLimit(1)
                 Spacer()
                 if item.priority == .high {
                     Image(systemName: "exclamationmark.circle.fill").foregroundStyle(.red).font(.caption)
