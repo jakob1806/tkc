@@ -1,0 +1,31 @@
+name: SocialMediaTKC
+options:
+  bundleIdPrefix: de.toelzerknabenchor
+  deploymentTarget:
+    iOS: "17.0"
+configs:
+  Debug: debug
+  Release: release
+targets:
+  SocialMediaTKC:
+    type: application
+    platform: iOS
+    sources:
+      - path: SocialMediaTKC
+    info:
+      path: SocialMediaTKC/Info.plist
+      properties:
+        UILaunchScreen: {}
+        CFBundleDisplayName: TKC Content Hub
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: de.toelzerknabenchor.contenthub
+        SWIFT_VERSION: 5.0
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        DEVELOPMENT_TEAM: ""
+        CODE_SIGN_STYLE: Automatic

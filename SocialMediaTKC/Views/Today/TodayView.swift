@@ -1,0 +1,146 @@
+import SwiftUI
+import SwiftData
+
+/// §15 Dashboard + §16 Intelligente Warnungen.
+struct TodayView: View {
+    @Query(sort: \ContentItem.date) private var allContent: [ContentItem]
+    @Query(sort: \Concert.date) private var allConcerts: [Concert]
+
+    private let calendar = Calendar.current
+
+    private var todayItems: [ContentItem] {
+        allContent.filter { calendar.isDateInToday($0.publishTime ?? $0.date) }
+    }
+
+    private var upcomingItems: [ContentItem] {
+        allContent.filter {
+            let date = $0.publishTime ?? $0.date
+            return date > .now && date <= calendar.date(byAdding: .day, value: 7, to: .now)!
+        }
+    }
+
+    private var upcomingConcerts: [Concert] {
+        allConcerts.filter { $0.daysUntil >= 0 }.prefix(5).map { $0 }
+    }
+
+    private var warnings: [Warning] {
+        var out: [Warning] = []
+        for concert in ContentScheduler.concertsWithoutContentSoon(concerts: allConcerts) {
+            out.append(Warning(icon: "exclamationmark.triangle.fill", color: .red, text: "\(concert.title) ist in \(concert.daysUntil) Tagen, aber noch ohne geplanten Content."))
+        }
+        for concert in ContentScheduler.concertsTomorrowWithoutStory(concerts: allConcerts) {
+            out.append(Warning(icon: "exclamationmark.triangle.fill", color: .orange, text: "\(concert.title) ist morgen, aber noch keine Story geplant."))
+        }
+        for item in allContent where item.isOverdue {
+            out.append(Warning(icon: "clock.badge.exclamationmark", color: .red, text: "„\(item.title)“ sollte bereits veröffentlicht sein."))
+        }
+        for item in allContent where item.isMissingCaption && item.status != .idea && item.status != .discarded {
+            out.append(Warning(icon: "text.badge.xmark", color: .orange, text: "„\(item.title)“ hat noch keine Caption."))
+        }
+        for item in allContent where item.isMissingAsset && item.status != .idea && item.status != .discarded {
+            out.append(Warning(icon: "photo.badge.exclamationmark", color: .orange, text: "„\(item.title)“ hat noch kein Asset."))
+        }
+        for item in allContent where item.isLongPendingApproval {
+            out.append(Warning(icon: "hourglass", color: .yellow, text: "„\(item.title)“ wartet lange auf Freigabe."))
+        }
+        for pair in ContentScheduler.itemsTooClose(items: allContent) {
+            out.append(Warning(icon: "arrow.left.and.right", color: .purple, text: "„\(pair.0.title)“ und „\(pair.1.title)“ liegen sehr nah beieinander."))
+        }
+        return out
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section("Heute") {
+                    if todayItems.isEmpty {
+                        Text("Heute muss nichts veröffentlicht werden.").foregroundStyle(.secondary)
+                    } else {
+                        ForEach(todayItems) { item in
+                            NavigationLink { ContentDetailView(item: item) } label: { ContentRow(item: item) }
+                        }
+                    }
+                }
+
+                Section("Demnächst (7 Tage)") {
+                    if upcomingItems.isEmpty {
+                        Text("Nichts in den nächsten 7 Tagen geplant.").foregroundStyle(.secondary)
+                    } else {
+                        ForEach(upcomingItems) { item in
+                            NavigationLink { ContentDetailView(item: item) } label: { ContentRow(item: item) }
+                        }
+                    }
+                }
+
+                Section("Kommende Konzerte") {
+                    ForEach(upcomingConcerts) { concert in
+                        NavigationLink { ConcertDetailView(concert: concert) } label: {
+                            HStack {
+                                Text(concert.title)
+                                Spacer()
+                                Text(concert.daysUntil == 0 ? "Heute" : "in \(concert.daysUntil) Tagen")
+                                    .font(.caption)
+                                    .foregroundStyle(.orange)
+                            }
+                        }
+                    }
+                }
+
+                if !warnings.isEmpty {
+                    Section("Hinweise") {
+                        ForEach(Array(warnings.enumerated()), id: \.offset) { _, warning in
+                            Label(warning.text, systemImage: warning.icon)
+                                .foregroundStyle(warning.color)
+                                .font(.subheadline)
+                        }
+                    }
+                }
+
+                Section("Content Status") {
+                    StatusSummaryView(items: allContent)
+                }
+            }
+            .navigationTitle("Heute")
+        }
+    }
+}
+
+private struct Warning {
+    let icon: String
+    let color: Color
+    let text: String
+}
+
+private struct ContentRow: View {
+    let item: ContentItem
+    var body: some View {
+        HStack {
+            Image(systemName: item.contentType.symbol).foregroundStyle(item.platform.color)
+            VStack(alignment: .leading) {
+                Text(item.title)
+                if let time = item.publishTime {
+                    Text(time.formatted(date: .omitted, time: .shortened)).font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            Spacer()
+            Text(item.status.displayName)
+                .font(.caption2)
+                .padding(.horizontal, 6).padding(.vertical, 2)
+                .background(item.status.color.opacity(0.15), in: Capsule())
+                .foregroundStyle(item.status.color)
+        }
+    }
+}
+
+private struct StatusSummaryView: View {
+    let items: [ContentItem]
+
+    var body: some View {
+        ForEach(ContentStatus.allCases) { status in
+            let count = items.filter { $0.status == status }.count
+            if count > 0 {
+                LabeledContent(status.displayName, value: "\(count)")
+            }
+        }
+    }
+}
