@@ -30,7 +30,24 @@ struct SettingsView: View {
             } header: {
                 Text("Team-Rolle")
             } footer: {
-                Text("„Nur lesend“ blendet Bearbeiten/Löschen/Freigeben aus. „Freigeber“ kann zusätzlich den Freigabestatus ändern. Läuft aktuell nur lokal auf diesem Gerät.")
+                Text("„Nur lesend“ blendet Bearbeiten/Löschen/Freigeben aus. „Freigeber“ kann zusätzlich den Freigabestatus ändern. Läuft aktuell nur lokal auf diesem Gerät und ist kein Zugriffsschutz - dafür wäre Supabase-Auth nötig.")
+            }
+
+            Section {
+                Toggle("Erinnerungen", isOn: Binding(
+                    get: { settings.remindersEnabled },
+                    set: { newValue in
+                        settings.remindersEnabled = newValue
+                        Task {
+                            if newValue { settings.remindersEnabled = await ReminderService.requestAuthorization() }
+                            await ReminderService.rescheduleAll(context: context)
+                        }
+                    }
+                ))
+            } header: {
+                Text("Benachrichtigungen")
+            } footer: {
+                Text("Erinnert zum geplanten Veröffentlichungszeitpunkt und am Vortag eines Konzerts um 18:00 Uhr.")
             }
 
             Section {
@@ -70,7 +87,7 @@ struct SettingsView: View {
             } header: {
                 Text("Chor Assistant (Gemini)")
             } footer: {
-                Text("Der Key bleibt lokal auf dem Gerät und wird nur direkt an die Gemini-API gesendet. Kostenlosen Key unter aistudio.google.com/apikey erzeugen.")
+                Text("Der Key liegt verschlüsselt in der Keychain dieses Geräts und wird nur direkt an die Gemini-API gesendet. Kostenlosen Key unter aistudio.google.com/apikey erzeugen.")
             }
 
             Section {
@@ -94,13 +111,13 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
-            if settings.currentRole.canDelete {
+            if settings.currentRole.canResetData {
                 Section {
                     Button("Alle Daten zurücksetzen", role: .destructive) {
                         showingResetConfirmation = true
                     }
                 } footer: {
-                    Text("Löscht alle Konzerte, Content-Einträge, Assets und Library-Einträge unwiderruflich von diesem Gerät.")
+                    Text("Löscht alle Konzerte, Content, Projekte, Touren, Sänger, Dokumente, Library-Einträge und Social-Analytics-Daten unwiderruflich von diesem Gerät. Nur für Freigeber.")
                 }
             }
         }
@@ -112,9 +129,26 @@ struct SettingsView: View {
     }
 
     private func resetAllData() {
-        for item in contentItems { context.delete(item) }
-        for concert in concerts { context.delete(concert) }
-        try? context.save()
+        do {
+            try deleteAll(ContentItem.self)
+            try deleteAll(Concert.self)
+            try deleteAll(LibraryItem.self)
+            try deleteAll(Project.self)
+            try deleteAll(Singer.self)
+            try deleteAll(Document.self)
+            try deleteAll(SocialAccount.self)
+            try deleteAll(SocialPost.self)
+            try context.save()
+            UserDefaults.standard.removeObject(forKey: "concertSync.deletedExternalIds")
+            UserDefaults.standard.removeObject(forKey: "concertSync.lastSuccessAt")
+        } catch {
+            syncStatus = "Zurücksetzen fehlgeschlagen: \(error.localizedDescription)"
+        }
+    }
+
+    /// Einzeln löschen statt Batch-Delete, damit die Kaskaden-Regeln der Relationships greifen.
+    private func deleteAll<T: PersistentModel>(_ type: T.Type) throws {
+        for object in try context.fetch(FetchDescriptor<T>()) { context.delete(object) }
     }
 
     private func syncNow() async {

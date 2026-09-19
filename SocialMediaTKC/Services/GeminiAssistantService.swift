@@ -38,8 +38,7 @@ enum GeminiAssistantService {
 
         let systemContext = try buildContextSnapshot(context: context)
 
-        var url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent")!
-        url = url.appending(queryItems: [URLQueryItem(name: "key", value: apiKey)])
+        let url = URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent")!
 
         var contents: [[String: Any]] = []
         for message in history {
@@ -57,6 +56,7 @@ enum GeminiAssistantService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(apiKey, forHTTPHeaderField: "x-goog-api-key")
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (data, response) = try await URLSession.shared.data(for: request)

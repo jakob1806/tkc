@@ -6,6 +6,7 @@ struct TaskChecklistView: View {
     @Environment(\.modelContext) private var context
     @Bindable var item: ContentItem
     @State private var newTaskTitle = ""
+    @State private var taskToDelete: ContentTask?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -14,20 +15,23 @@ struct TaskChecklistView: View {
                     .tint(item.taskProgress == 1 ? .green : .accentColor)
             }
             ForEach(item.tasks.sorted(by: { $0.createdAt < $1.createdAt })) { task in
-                Button {
-                    task.completed.toggle()
-                } label: {
-                    Label(task.title, systemImage: task.completed ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(task.completed ? .secondary : .primary)
-                        .strikethrough(task.completed)
-                }
-                .buttonStyle(.plain)
-                .swipeActions {
-                    Button(role: .destructive) {
-                        context.delete(task)
+                HStack {
+                    Button {
+                        task.completed.toggle()
                     } label: {
-                        Label("Löschen", systemImage: "trash")
+                        Label(task.title, systemImage: task.completed ? "checkmark.circle.fill" : "circle")
+                            .foregroundStyle(task.completed ? .secondary : .primary)
+                            .strikethrough(task.completed)
                     }
+                    .buttonStyle(.borderless)
+                    Spacer()
+                    Button(role: .destructive) {
+                        taskToDelete = task
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                    .buttonStyle(.borderless)
+                    .accessibilityLabel("Aufgabe löschen")
                 }
             }
             HStack {
@@ -40,6 +44,12 @@ struct TaskChecklistView: View {
                     newTaskTitle = ""
                 }
                 .disabled(newTaskTitle.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+        }
+        .confirmationDialog("Aufgabe löschen?", isPresented: Binding(get: { taskToDelete != nil }, set: { if !$0 { taskToDelete = nil } }), titleVisibility: .visible) {
+            Button("Löschen", role: .destructive) {
+                if let task = taskToDelete { context.delete(task) }
+                taskToDelete = nil
             }
         }
     }

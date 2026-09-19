@@ -61,31 +61,35 @@ private struct BoardColumn: View {
                             BoardCard(item: item)
                         }
                         .buttonStyle(.plain)
-                        .contextMenu {
-                            Menu("Verschieben nach") {
-                                ForEach(ContentStatus.allCases.filter { $0 != status }) { target in
-                                    Button(target.displayName) { item.status = target }
-                                }
-                            }
-                        }
-                        .swipeActions(edge: .trailing) {
+                        .overlay(alignment: .bottomTrailing) {
                             if let next = ContentStatus.boardColumns.next(after: status) {
                                 Button {
                                     item.status = next
                                 } label: {
-                                    Label(next.displayName, systemImage: "arrow.right")
+                                    Image(systemName: "arrow.right.circle.fill")
+                                        .font(.title3)
+                                        .foregroundStyle(next.color)
+                                        .padding(6)
                                 }
-                                .tint(next.color)
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Verschieben nach \(next.displayName)")
                             }
                         }
-                        .swipeActions(edge: .leading) {
-                            if let previous = ContentStatus.boardColumns.previous(before: status) {
-                                Button {
-                                    item.status = previous
-                                } label: {
-                                    Label(previous.displayName, systemImage: "arrow.left")
+                        .contextMenu {
+                            if let next = ContentStatus.boardColumns.next(after: status) {
+                                Button { item.status = next } label: {
+                                    Label("Weiter: \(next.displayName)", systemImage: "arrow.right")
                                 }
-                                .tint(previous.color)
+                            }
+                            if let previous = ContentStatus.boardColumns.previous(before: status) {
+                                Button { item.status = previous } label: {
+                                    Label("Zurück: \(previous.displayName)", systemImage: "arrow.left")
+                                }
+                            }
+                            Menu("Verschieben nach") {
+                                ForEach(ContentStatus.allCases.filter { $0 != status }) { target in
+                                    Button(target.displayName) { item.status = target }
+                                }
                             }
                         }
                     }

@@ -9,6 +9,7 @@ struct HomeView: View {
     @Query(sort: \Concert.date) private var allConcerts: [Concert]
     @Query private var allTourDays: [TourDay]
     @State private var showingAssistant = false
+    @State private var showingSearch = false
 
     private let calendar = Calendar.current
 
@@ -29,13 +30,13 @@ struct HomeView: View {
     }
 
     private var upcomingConcerts: [Concert] {
-        allConcerts.filter { $0.daysUntil >= 0 }.prefix(5).map { $0 }
+        allConcerts.filter { !$0.isPast }.sorted { $0.date < $1.date }.prefix(5).map { $0 }
     }
 
     private var warnings: [Warning] {
         var out: [Warning] = []
         for concert in ContentScheduler.concertsWithoutContentSoon(concerts: allConcerts) {
-            out.append(Warning(icon: "exclamationmark.triangle.fill", color: .red, text: "\(concert.title) ist in \(concert.daysUntil) Tagen, aber noch ohne geplanten Content."))
+            out.append(Warning(icon: "exclamationmark.triangle.fill", color: .red, text: "\(concert.title) ist \(concert.daysUntilLabel.lowercased()), aber noch ohne geplanten Content."))
         }
         for concert in ContentScheduler.concertsTomorrowWithoutStory(concerts: allConcerts) {
             out.append(Warning(icon: "exclamationmark.triangle.fill", color: .orange, text: "\(concert.title) ist morgen, aber noch keine Story geplant."))
@@ -43,10 +44,10 @@ struct HomeView: View {
         for item in allContent where item.isOverdue {
             out.append(Warning(icon: "clock.badge.exclamationmark", color: .red, text: "„\(item.title)“ sollte bereits veröffentlicht sein."))
         }
-        for item in allContent where item.isMissingCaption && item.status != .idea && item.status != .discarded {
+        for item in allContent where item.isMissingCaption && item.status.needsPreparationWarnings {
             out.append(Warning(icon: "text.badge.xmark", color: .orange, text: "„\(item.title)“ hat noch keine Caption."))
         }
-        for item in allContent where item.isMissingAsset && item.status != .idea && item.status != .discarded {
+        for item in allContent where item.isMissingAsset && item.status.needsPreparationWarnings {
             out.append(Warning(icon: "photo.badge.exclamationmark", color: .orange, text: "„\(item.title)“ hat noch kein Asset."))
         }
         for item in allContent where item.isLongPendingApproval {
@@ -97,7 +98,7 @@ struct HomeView: View {
                             HStack {
                                 Text(concert.title)
                                 Spacer()
-                                Text(concert.daysUntil == 0 ? "Heute" : "in \(concert.daysUntil) Tagen")
+                                Text(concert.daysUntilLabel)
                                     .font(.caption)
                                     .foregroundStyle(.orange)
                             }
@@ -121,12 +122,20 @@ struct HomeView: View {
             }
             .navigationTitle("Home")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button { showingSearch = true } label: { Image(systemName: "magnifyingglass") }
+                        .accessibilityLabel("Suche")
+                }
                 ToolbarItem(placement: .primaryAction) {
                     Button { showingAssistant = true } label: { Image(systemName: "sparkles") }
+                        .accessibilityLabel("Chor-Assistent")
                 }
             }
             .sheet(isPresented: $showingAssistant) {
                 ChorAssistantView()
+            }
+            .sheet(isPresented: $showingSearch) {
+                GlobalSearchView()
             }
         }
     }

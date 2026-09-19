@@ -8,6 +8,7 @@ struct ProjectListView: View {
     @Query(sort: \Project.createdAt, order: .reverse) private var projects: [Project]
     @Query(sort: \Concert.date) private var concerts: [Concert]
     @State private var showingNewProject = false
+    @State private var projectToDelete: Project?
 
     private var unassignedConcerts: [Concert] {
         concerts.filter { $0.project == nil }
@@ -28,7 +29,7 @@ struct ProjectListView: View {
                         }
                     }
                     .onDelete { indices in
-                        for index in indices { context.delete(projects[index]) }
+                        projectToDelete = indices.first.map { projects[$0] }
                     }
                 }
 
@@ -57,6 +58,18 @@ struct ProjectListView: View {
             }
             .sheet(isPresented: $showingNewProject) {
                 NewProjectSheet()
+            }
+            .confirmationDialog(
+                "Projekt „\(projectToDelete?.title ?? "")“ löschen?",
+                isPresented: Binding(get: { projectToDelete != nil }, set: { if !$0 { projectToDelete = nil } }),
+                titleVisibility: .visible
+            ) {
+                Button("Projekt inkl. Tour und Besetzung löschen", role: .destructive) {
+                    if let project = projectToDelete { context.delete(project) }
+                    projectToDelete = nil
+                }
+            } message: {
+                Text("Tour, Reisetage und Besetzung werden mitgelöscht. Zugeordnete Konzerte bleiben erhalten.")
             }
         }
     }

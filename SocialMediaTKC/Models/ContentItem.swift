@@ -40,6 +40,9 @@ final class ContentItem {
     var createdAt: Date
     var updatedAt: Date
 
+    /// Stabile ID für den Team-Sync (wird beim ersten Sync vergeben; `persistentModelID.hashValue` wäre pro Lauf zufällig).
+    var syncId: String?
+
     // MARK: - §24 Performance (optional, manuell oder später per API befüllt)
     var metricViews: Int?
     var metricLikes: Int?
@@ -150,5 +153,30 @@ final class ContentItem {
     /// Engagement-Score für einfache Vergleiche in der Performance-Auswertung (§24).
     var engagementScore: Int {
         (metricLikes ?? 0) + (metricComments ?? 0) + (metricShares ?? 0) + (metricSaves ?? 0)
+    }
+
+    /// Legt eine Kopie als ungeplante Idee an (Texte übernommen, Assets/Aufgaben/Kommentare/Metriken nicht).
+    @discardableResult
+    func duplicate(in context: ModelContext) -> ContentItem {
+        let copy = ContentItem(
+            title: "\(title) (Kopie)",
+            date: .now,
+            publishTime: nil,
+            platform: platform,
+            contentType: contentType,
+            status: .idea,
+            priority: priority,
+            assignee: assignee,
+            concert: concert,
+            isUnplanned: true
+        )
+        copy.caption = caption
+        copy.storyText = storyText
+        copy.callToAction = callToAction
+        copy.hashtags = hashtags
+        copy.notes = notes
+        copy.links = links
+        context.insert(copy)
+        return copy
     }
 }
