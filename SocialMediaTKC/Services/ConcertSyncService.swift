@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 import SwiftData
 
 /// Lädt https://www.toelzerknabenchor.de/konzerte, extrahiert strukturierte Konzertdaten,
@@ -103,8 +104,18 @@ actor ConcertSyncService {
     }
 
     /// Löst Tag/Monat-Paare (ohne Jahr) zu echten Daten auf. Die Liste ist chronologisch;
-    /// ein Sprung von einem hohen Monat (z.B. Dez) zu einem niedrigen (z.B. Jan/Apr) bedeutet Jahreswechsel.
-    static func resolveYears(_ parsed: [ParsedConcert], startYear: Int, calendar: Calendar = .current) -> [(ParsedConcert, Date)] {
+    /// ein Sprung von einem hohen Monat (z.B. Dez) zu einem niedrigen (z.B. Jan/Apr) bedeutet
+    /// Jahreswechsel. Das Startjahr des ersten Eintrags wird so gewählt, dass das Datum am
+    /// nächsten an "heute" liegt (die Quelle zeigt kürzlich vergangene und kommende Konzerte) -
+    /// sonst wären Konzerte im Januar-Fenster nach Silvester ein Jahr zu spät.
+    static func resolveYears(_ parsed: [ParsedConcert], referenceDate: Date, calendar: Calendar = .current) -> [(ParsedConcert, Date)] {
+        guard let first = parsed.first else { return [] }
+        let refYear = calendar.component(.year, from: referenceDate)
+        let startYear = [refYear - 1, refYear, refYear + 1].min { lhs, rhs in
+            distance(year: lhs, of: first, to: referenceDate, calendar: calendar)
+                < distance(year: rhs, of: first, to: referenceDate, calendar: calendar)
+        } ?? refYear
+
         var year = startYear
         var lastMonth = 0
         var out: [(ParsedConcert, Date)] = []
@@ -129,12 +140,23 @@ actor ConcertSyncService {
         return out
     }
 
-    /// Erzeugt eine stabile, deduplizierende ID aus Datum + Titel + Ort,
-    /// da die Quelle selbst keine eindeutigen Konzert-IDs liefert.
+    private static func distance(year: Int, of item: ParsedConcert, to reference: Date, calendar: Calendar) -> TimeInterval {
+        var components = DateComponents()
+        components.year = year
+        components.month = item.month
+        components.day = item.day
+        guard let date = calendar.date(from: components) else { return .infinity }
+        return abs(date.timeIntervalSince(reference))
+    }
+
+    /// Erzeugt eine stabile, deduplizierende ID aus Datum + Titel + Ort. Muss über App-Starts
+    /// hinweg identisch bleiben (`hashValue` ist pro Prozess zufällig gesalzen und erzeugte bei
+    /// jedem Neustart Duplikate), daher SHA-256.
     static func externalId(for item: ParsedConcert, date: Date) -> String {
         let dayKey = ISO8601DateFormatter().string(from: date).prefix(10)
         let raw = "\(dayKey)|\(item.title)|\(item.location ?? "")"
-        return String(raw.hashValue)
+        let digest = SHA256.hash(data: Data(raw.utf8))
+        return digest.prefix(12).map { String(format: "%02x", $0) }.joined()
     }
 
     /// Führt Fetch, Parsing und Upsert in einem Rutsch durch.
@@ -143,8 +165,7 @@ actor ConcertSyncService {
         let service = ConcertSyncService()
         let parsed = try await service.fetchAndParse()
         let calendar = Calendar.current
-        let startYear = calendar.component(.year, from: referenceDate)
-        let resolved = resolveYears(parsed, startYear: startYear, calendar: calendar)
+        let resolved = resolveYears(parsed, referenceDate: referenceDate, calendar: calendar)
 
         var inserted = 0
         var updated = 0
@@ -153,7 +174,17 @@ actor ConcertSyncService {
         for (item, date) in resolved {
             let extId = externalId(for: item, date: date)
             let descriptor = FetchDescriptor<Concert>(predicate: #Predicate { $0.externalId == extId })
-            let existing = try? context.fetch(descriptor).first
+            var existing = try? context.fetch(descriptor).first
+            if existing == nil {
+                // Konzerte aus Versionen mit instabiler ID (Duplikat-Bug) über Titel + Datum
+                // wiederfinden und auf die stabile ID umstellen statt sie doppelt anzulegen.
+                let title = item.title
+                let legacy = FetchDescriptor<Concert>(predicate: #Predicate { $0.title == title && $0.date == date })
+                if let match = try? context.fetch(legacy).first {
+                    match.externalId = extId
+                    existing = match
+                }
+            }
 
             let (city, venue, address) = splitLocation(item.location)
 
@@ -202,5 +233,19 @@ actor ConcertSyncService {
         let venue = parts.first ?? rest
         let address = parts.count > 1 ? parts[1] : nil
         return (city, venue, address)
+    }
+
+    private static let lastSyncKey = "concertSync.lastSuccessAt"
+
+    /// Automatischer Abruf beim App-Start/Vordergrund: nur wenn der letzte erfolgreiche Sync
+    /// länger als `minInterval` her ist. Fehler (z.B. offline) werden bewusst geschluckt -
+    /// der manuelle Button meldet sie weiterhin.
+    @MainActor
+    static func syncIfStale(context: ModelContext, minInterval: TimeInterval = 6 * 3600) async {
+        let last = UserDefaults.standard.object(forKey: lastSyncKey) as? Date
+        if let last, Date.now.timeIntervalSince(last) < minInterval { return }
+        if (try? await syncNow(context: context)) != nil {
+            UserDefaults.standard.set(Date.now, forKey: lastSyncKey)
+        }
     }
 }
