@@ -48,14 +48,15 @@ struct RootTabView: View {
                         .font(.title2.weight(.semibold))
                         .foregroundStyle(.white)
                         .frame(width: 56, height: 56)
-                        .background(Circle().fill(Color.accentColor))
-                        .shadow(radius: 6, y: 3)
+                        .background(Circle().fill(Theme.buttonGradient))
+                        .shadow(color: Theme.brand.opacity(0.45), radius: 8, y: 4)
                 }
                 .padding(.trailing, 20)
                 .padding(.bottom, 68)
                 .accessibilityLabel("Neuer Content")
             }
         }
+        .tint(Theme.brand)
         .sheet(isPresented: $showingNewContent) {
             ContentEditorView(concert: nil)
         }

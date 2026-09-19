@@ -22,6 +22,7 @@ struct ContentBoardView: View {
                 }
                 .padding()
             }
+            .background(Theme.background.ignoresSafeArea())
             .navigationTitle("Board")
             .sheet(item: $newContentStatus) { status in
                 ContentEditorView(concert: nil, initialStatus: status)
@@ -39,9 +40,12 @@ private struct BoardColumn: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Circle().fill(status.color).frame(width: 8, height: 8)
-                Text(status.displayName).font(.headline)
-                Text("\(items.count)").font(.caption).foregroundStyle(.secondary)
+                Text(status.displayName).font(.headline).foregroundStyle(status.color)
+                Text("\(items.count)")
+                    .font(.caption.weight(.bold))
+                    .padding(.horizontal, 7).padding(.vertical, 2)
+                    .background(status.color.opacity(0.18), in: Capsule())
+                    .foregroundStyle(status.color)
                 Spacer()
                 Button {
                     onAdd()
@@ -98,7 +102,12 @@ private struct BoardColumn: View {
         }
         .padding(10)
         .frame(width: 240)
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .background(status.color.opacity(0.10), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(alignment: .top) {
+            UnevenRoundedRectangle(topLeadingRadius: 14, topTrailingRadius: 14)
+                .fill(status.color)
+                .frame(height: 4)
+        }
     }
 }
 

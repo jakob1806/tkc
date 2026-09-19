@@ -50,6 +50,7 @@ struct ProjectListView: View {
                     }
                 }
             }
+            .themedList()
             .navigationTitle("Projekte")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {

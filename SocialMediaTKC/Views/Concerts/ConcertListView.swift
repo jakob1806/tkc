@@ -24,6 +24,7 @@ struct ConcertListView: View {
                 }
             }
             .refreshable { await sync() }
+            .themedList()
             .overlay {
                 if concerts.isEmpty {
                     ContentUnavailableView("Keine Konzerte", systemImage: "music.mic", description: Text("Tippe auf „Konzerte aktualisieren“, um von toelzerknabenchor.de zu synchronisieren."))
@@ -96,14 +97,7 @@ private struct ConcertRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            VStack {
-                Text(concert.date.formatted(Date.FormatStyle(locale: .german).day()))
-                    .font(.title2.bold())
-                Text(concert.date.formatted(Date.FormatStyle(locale: .german).month(.abbreviated)))
-                    .font(.caption)
-                    .textCase(.uppercase)
-            }
-            .frame(width: 44)
+            DateBadge(date: concert.date, isPast: concert.isPast)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(concert.title).font(.headline)
@@ -113,10 +107,10 @@ private struct ConcertRow: View {
                 HStack(spacing: 8) {
                     if !concert.isPast {
                         Text(concert.daysUntilLabel)
-                            .font(.caption)
-                            .foregroundStyle(.orange)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Theme.gold)
                     }
-                    Text("\(concert.contentItems.count) Content Items geplant")
+                    Label("\(concert.contentItems.count) Content", systemImage: "sparkles")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

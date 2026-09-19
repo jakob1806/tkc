@@ -62,6 +62,18 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section {
+                    HeroCard(
+                        concert: upcomingConcerts.first,
+                        todayCount: todayItems.count,
+                        weekCount: upcomingItems.count,
+                        warningCount: warnings.count
+                    )
+                }
+                .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+
                 if let activeTourDay {
                     Section("Auf Tour") {
                         NavigationLink {
@@ -72,7 +84,7 @@ struct HomeView: View {
                     }
                 }
 
-                Section("Heute") {
+                Section {
                     if todayItems.isEmpty {
                         Text("Heute muss nichts veröffentlicht werden.").foregroundStyle(.secondary)
                     } else {
@@ -80,9 +92,9 @@ struct HomeView: View {
                             NavigationLink { ContentDetailView(item: item) } label: { ContentRow(item: item) }
                         }
                     }
-                }
+                } header: { SectionTitle("Heute", symbol: "sun.max.fill", color: Theme.gold) }
 
-                Section("Demnächst (7 Tage)") {
+                Section {
                     if upcomingItems.isEmpty {
                         Text("Nichts in den nächsten 7 Tagen geplant.").foregroundStyle(.secondary)
                     } else {
@@ -90,36 +102,43 @@ struct HomeView: View {
                             NavigationLink { ContentDetailView(item: item) } label: { ContentRow(item: item) }
                         }
                     }
-                }
+                } header: { SectionTitle("Demnächst (7 Tage)", symbol: "calendar.badge.clock", color: .blue) }
 
-                Section("Kommende Konzerte") {
+                Section {
                     ForEach(upcomingConcerts) { concert in
                         NavigationLink { ConcertDetailView(concert: concert) } label: {
-                            HStack {
-                                Text(concert.title)
+                            HStack(spacing: 12) {
+                                DateBadge(date: concert.date)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(concert.title).font(.subheadline.weight(.semibold)).lineLimit(2)
+                                    Text(concert.city).font(.caption).foregroundStyle(.secondary)
+                                }
                                 Spacer()
                                 Text(concert.daysUntilLabel)
-                                    .font(.caption)
-                                    .foregroundStyle(.orange)
+                                    .font(.caption.weight(.semibold))
+                                    .padding(.horizontal, 8).padding(.vertical, 3)
+                                    .background(Theme.gold.opacity(0.18), in: Capsule())
+                                    .foregroundStyle(Theme.gold)
                             }
                         }
                     }
-                }
+                } header: { SectionTitle("Kommende Konzerte", symbol: "music.mic", color: Theme.brand) }
 
                 if !warnings.isEmpty {
-                    Section("Hinweise") {
+                    Section {
                         ForEach(Array(warnings.enumerated()), id: \.offset) { _, warning in
                             Label(warning.text, systemImage: warning.icon)
                                 .foregroundStyle(warning.color)
                                 .font(.subheadline)
                         }
-                    }
+                    } header: { SectionTitle("Hinweise", symbol: "exclamationmark.bubble.fill", color: .orange) }
                 }
 
-                Section("Content Status") {
+                Section {
                     StatusSummaryView(items: allContent)
-                }
+                } header: { SectionTitle("Content Status", symbol: "chart.bar.fill", color: .purple) }
             }
+            .themedList()
             .navigationTitle("Home")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -138,6 +157,112 @@ struct HomeView: View {
                 GlobalSearchView()
             }
         }
+    }
+}
+
+private struct SectionTitle: View {
+    let title: String
+    let symbol: String
+    let color: Color
+
+    init(_ title: String, symbol: String, color: Color) {
+        self.title = title
+        self.symbol = symbol
+        self.color = color
+    }
+
+    var body: some View {
+        Label(title, systemImage: symbol)
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(color)
+            .textCase(nil)
+    }
+}
+
+/// Hero-Karte: nächstes Konzert mit Countdown und Tageskennzahlen.
+private struct HeroCard: View {
+    let concert: Concert?
+    let todayCount: Int
+    let weekCount: Int
+    let warningCount: Int
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            LogoRing()
+                .frame(width: 150, height: 150)
+                .foregroundStyle(.white.opacity(0.10))
+                .offset(x: 34, y: -34)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 14) {
+                if let concert {
+                    NavigationLink {
+                        ConcertDetailView(concert: concert)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("NÄCHSTES KONZERT")
+                                .font(.caption2.weight(.bold))
+                                .tracking(1.2)
+                                .foregroundStyle(Theme.gold)
+                            Text(concert.title)
+                                .font(.system(.title2, design: .serif).weight(.bold))
+                                .foregroundStyle(.white)
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(2)
+                            HStack(spacing: 8) {
+                                Text(concert.daysUntilLabel)
+                                    .font(.subheadline.weight(.bold))
+                                    .padding(.horizontal, 10).padding(.vertical, 4)
+                                    .background(Theme.gold, in: Capsule())
+                                    .foregroundStyle(Color(light: 0x3A0C09, dark: 0x3A0C09))
+                                Text("\(concert.startTime.map { $0.formatted(date: .omitted, time: .shortened) + " · " } ?? "")\(concert.venue), \(concert.city)")
+                                    .font(.footnote)
+                                    .foregroundStyle(.white.opacity(0.85))
+                                    .lineLimit(1)
+                            }
+                        }
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Text("Willkommen beim TKC Content Hub")
+                        .font(.system(.title3, design: .serif).weight(.bold))
+                        .foregroundStyle(.white)
+                    Text("Sobald Konzerte synchronisiert sind, erscheint hier das nächste.")
+                        .font(.footnote)
+                        .foregroundStyle(.white.opacity(0.85))
+                }
+
+                HStack(spacing: 10) {
+                    StatChip(value: todayCount, label: "Heute", symbol: "sun.max.fill")
+                    StatChip(value: weekCount, label: "7 Tage", symbol: "calendar")
+                    StatChip(value: warningCount, label: "Hinweise", symbol: "exclamationmark.triangle.fill")
+                }
+            }
+            .padding(18)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .background(Theme.heroGradient, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .shadow(color: Theme.brand.opacity(0.30), radius: 12, y: 6)
+    }
+}
+
+private struct StatChip: View {
+    let value: Int
+    let label: String
+    let symbol: String
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: symbol).font(.caption).foregroundStyle(Theme.gold)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("\(value)").font(.subheadline.weight(.bold)).foregroundStyle(.white)
+                Text(label).font(.caption2).foregroundStyle(.white.opacity(0.75))
+            }
+        }
+        .padding(.horizontal, 10).padding(.vertical, 6)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
 

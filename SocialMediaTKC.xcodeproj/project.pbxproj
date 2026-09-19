@@ -15,6 +15,7 @@
 		0D9412952E96CC0625531A19 /* ArchiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78D2DA058A6768EA5E2A72 /* ArchiveView.swift */; };
 		0FE6799FFCF4589857048E97 /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61617BE7AF2716262B9FE9C1 /* Document.swift */; };
 		18C5D4C33B091EC8D4036AF9 /* Asset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C926DE7189CBDCDE37239F6 /* Asset.swift */; };
+		18C6B1423C850F738AFEC468 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59112B87295853ADFAE3053A /* Theme.swift */; };
 		1C98E93F2C041828F04B7121 /* ChoirRosterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23BA3CE731C0A29AD23AD91B /* ChoirRosterView.swift */; };
 		21C192BF739A19F687C4ABE1 /* SocialAnalyticsExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AE3BFD94FB16EBB5BDBB859 /* SocialAnalyticsExportView.swift */; };
 		21CE540BF48373D750BF127A /* ContentTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9022E2E7E0D58D5E49688FD /* ContentTemplate.swift */; };
@@ -122,6 +123,7 @@
 		563903CBB90D75E1E40EF453 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
 		57B1D12B5FA012BB7D8C2A05 /* Singer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Singer.swift; sourceTree = "<group>"; };
 		57BC79AC6E6D9DAE067BAEE3 /* ConcertListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcertListView.swift; sourceTree = "<group>"; };
+		59112B87295853ADFAE3053A /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		5B944EAB8FCAF3B215F7978F /* SocialMediaTKC.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SocialMediaTKC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		60A596A463AF913724872EC8 /* IdeasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdeasView.swift; sourceTree = "<group>"; };
 		61617BE7AF2716262B9FE9C1 /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
@@ -352,6 +354,7 @@
 			isa = PBXGroup;
 			children = (
 				539BD845826B0728CF249497 /* RootTabView.swift */,
+				59112B87295853ADFAE3053A /* Theme.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -603,6 +606,7 @@
 				710D95E987F5EA0D0BC342F7 /* SocialPostDetailView.swift in Sources */,
 				C9886B5C85AE0EF312174EDD /* SupabaseSyncService.swift in Sources */,
 				EA9C310E615E840B2CECA030 /* TaskChecklistView.swift in Sources */,
+				18C6B1423C850F738AFEC468 /* Theme.swift in Sources */,
 				3E2A738CE1BF012A73E844DB /* TicketCorrelationView.swift in Sources */,
 				0D395AFDEBBEBF3175E45397 /* TikTokAnalyticsProvider.swift in Sources */,
 				9D752A28A036B253BA78CD96 /* Tour.swift in Sources */,

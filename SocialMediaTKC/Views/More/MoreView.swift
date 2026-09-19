@@ -10,49 +10,49 @@ struct MoreView: View {
             List {
                 Section {
                     NavigationLink { ChorAssistantView() } label: {
-                        Label("Chor Assistant", systemImage: "sparkles")
+                        ThemedLabel(title: "Chor Assistant", symbol: "sparkles", color: .purple)
                     }
                 }
 
                 Section("Konzerte & Content") {
                     NavigationLink { ConcertListView() } label: {
-                        Label("Alle Konzerte", systemImage: "music.mic")
+                        ThemedLabel(title: "Alle Konzerte", symbol: "music.mic", color: Theme.brand)
                     }
                     NavigationLink { ContentBoardView() } label: {
-                        Label("Board", systemImage: "square.grid.3x3.fill")
+                        ThemedLabel(title: "Board", symbol: "square.grid.3x3.fill", color: .blue)
                     }
                     NavigationLink { IdeasView() } label: {
-                        Label("Ideen", systemImage: "lightbulb")
+                        ThemedLabel(title: "Ideen", symbol: "lightbulb.fill", color: Theme.gold)
                     }
                     NavigationLink { TemplateListView() } label: {
-                        Label("Content-Templates", systemImage: "doc.on.doc")
+                        ThemedLabel(title: "Content-Templates", symbol: "doc.on.doc.fill", color: .teal)
                     }
                     NavigationLink { ContentLibraryView() } label: {
-                        Label("Content-Bibliothek", systemImage: "books.vertical")
+                        ThemedLabel(title: "Content-Bibliothek", symbol: "books.vertical.fill", color: .indigo)
                     }
                     NavigationLink { ArchiveView() } label: {
-                        Label("Archiv veröffentlichter Beiträge", systemImage: "archivebox")
+                        ThemedLabel(title: "Archiv veröffentlichter Beiträge", symbol: "archivebox.fill", color: .brown)
                     }
                     NavigationLink { ExportView() } label: {
-                        Label("Exportieren", systemImage: "square.and.arrow.up")
+                        ThemedLabel(title: "Exportieren", symbol: "square.and.arrow.up.fill", color: .green)
                     }
                     NavigationLink { TicketCorrelationView() } label: {
-                        Label("Ticket-Auswertung", systemImage: "chart.xyaxis.line")
+                        ThemedLabel(title: "Ticket-Auswertung", symbol: "chart.xyaxis.line", color: .orange)
                     }
                 }
 
                 Section("Chor & Besetzung") {
                     NavigationLink { ChoirRosterView() } label: {
-                        Label("Sänger verwalten", systemImage: "person.3")
+                        ThemedLabel(title: "Sänger verwalten", symbol: "person.3.fill", color: .pink)
                     }
                 }
 
                 Section("Archiv & Ressourcen") {
                     NavigationLink { MediaLibraryView() } label: {
-                        Label("Medien", systemImage: "photo.stack")
+                        ThemedLabel(title: "Medien", symbol: "photo.stack.fill", color: .cyan)
                     }
                     NavigationLink { DocumentsView() } label: {
-                        Label("Dokumente", systemImage: "doc.text.magnifyingglass")
+                        ThemedLabel(title: "Dokumente", symbol: "doc.text.fill", color: .mint)
                     }
                 }
 
@@ -68,10 +68,11 @@ struct MoreView: View {
 
                 Section {
                     NavigationLink { SettingsView() } label: {
-                        Label("Einstellungen", systemImage: "gearshape")
+                        ThemedLabel(title: "Einstellungen", symbol: "gearshape.fill", color: .gray)
                     }
                 }
             }
+            .themedList()
             .navigationTitle("Mehr")
         }
     }

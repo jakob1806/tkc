@@ -51,7 +51,7 @@ enum Platform: String, Codable, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .instagram, .instagramStory, .instagramReel: return .pink
-        case .tiktok: return .black
+        case .tiktok: return .primary
         case .youtube, .youtubeShorts: return .red
         case .whatsapp: return .green
         case .website: return .indigo
