@@ -78,7 +78,18 @@ final class Concert {
         Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: .now), to: Calendar.current.startOfDay(for: date)).day ?? 0
     }
 
-    var isPast: Bool { date < .now }
+    var isPast: Bool {
+        // Ein heutiges Konzert gilt noch bis zum Ende des Tages als "kommend".
+        Calendar.current.startOfDay(for: date) < Calendar.current.startOfDay(for: .now)
+    }
+
+    var daysUntilLabel: String {
+        switch daysUntil {
+        case 0: return "Heute"
+        case 1: return "Morgen"
+        default: return "in \(daysUntil) Tagen"
+        }
+    }
 
     var occupancyRate: Double? {
         guard let ticketsSold, let venueCapacity, venueCapacity > 0 else { return nil }

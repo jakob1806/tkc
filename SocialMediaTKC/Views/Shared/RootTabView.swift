@@ -38,6 +38,7 @@ struct RootTabView: View {
                     .tabItem { Label("Mehr", systemImage: "ellipsis.circle.fill") }
                     .tag(Tab.more)
             }
+            .contentMargins(.bottom, settings.currentRole.canEdit ? 76 : 0, for: .scrollContent)
 
             if settings.currentRole.canEdit {
                 Button {
@@ -60,10 +61,14 @@ struct RootTabView: View {
         }
         .task {
             await ConcertSyncService.syncIfStale(context: modelContext)
+            await ReminderService.rescheduleAll(context: modelContext)
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
-                Task { await ConcertSyncService.syncIfStale(context: modelContext) }
+                Task {
+                    await ConcertSyncService.syncIfStale(context: modelContext)
+                    await ReminderService.rescheduleAll(context: modelContext)
+                }
             }
         }
     }

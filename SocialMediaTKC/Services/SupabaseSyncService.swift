@@ -58,6 +58,13 @@ enum SupabaseSyncService {
         let updated_at: Date
     }
 
+    private static func stableSyncId(for item: ContentItem) -> String {
+        if let id = item.syncId { return id }
+        let id = UUID().uuidString
+        item.syncId = id
+        return id
+    }
+
     @MainActor
     static func syncAll(context: ModelContext) async throws -> SyncResult {
         let settings = AppSettings.shared
@@ -87,7 +94,7 @@ enum SupabaseSyncService {
 
         let contentDTOs = contentItems.map { item in
             ContentItemDTO(
-                id: item.persistentModelID.hashValue.description,
+                id: stableSyncId(for: item),
                 title: item.title,
                 date: item.date,
                 publish_time: item.publishTime,

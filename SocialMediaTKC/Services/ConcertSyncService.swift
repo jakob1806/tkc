@@ -16,9 +16,29 @@ import SwiftData
 /// Beschreibung liefert die Quelle aktuell nicht strukturiert - diese bleiben nach dem Sync leer
 /// und sind manuell im Konzert-Detail pflegbar (siehe `Concert.isManuallyEdited`).
 actor ConcertSyncService {
-    enum SyncError: Error {
+    enum SyncError: LocalizedError {
         case invalidResponse
         case noEventsFound
+
+        var errorDescription: String? {
+            switch self {
+            case .invalidResponse: return "Die Konzertseite konnte nicht geladen werden (keine Verbindung oder Server-Fehler)."
+            case .noEventsFound: return "Auf der Konzertseite wurden keine Konzerte gefunden - evtl. hat sich das Seitenlayout geändert."
+            }
+        }
+    }
+
+    private static let deletedIdsKey = "concertSync.deletedExternalIds"
+
+    /// Vom Nutzer gelöschte Konzerte, die die Quelle weiterhin führt - werden beim Sync nicht neu angelegt.
+    static func markDeleted(externalId: String) {
+        var ids = Set(UserDefaults.standard.stringArray(forKey: deletedIdsKey) ?? [])
+        ids.insert(externalId)
+        UserDefaults.standard.set(Array(ids), forKey: deletedIdsKey)
+    }
+
+    private static var deletedIds: Set<String> {
+        Set(UserDefaults.standard.stringArray(forKey: deletedIdsKey) ?? [])
     }
 
     static let sourceURL = URL(string: "https://www.toelzerknabenchor.de/konzerte")!
@@ -171,8 +191,10 @@ actor ConcertSyncService {
         var updated = 0
         var unchanged = 0
 
+        let skipped = deletedIds
         for (item, date) in resolved {
             let extId = externalId(for: item, date: date)
+            if skipped.contains(extId) { continue }
             let descriptor = FetchDescriptor<Concert>(predicate: #Predicate { $0.externalId == extId })
             var existing = try? context.fetch(descriptor).first
             if existing == nil {
@@ -193,6 +215,8 @@ actor ConcertSyncService {
                 if !concert.isManuallyEdited {
                     if concert.title != item.title { concert.title = item.title; changed = true }
                     if concert.date != date { concert.date = date; changed = true }
+                    let start: Date? = item.time == nil ? nil : date
+                    if concert.startTime != start { concert.startTime = start; changed = true }
                     if concert.venue != venue { concert.venue = venue; changed = true }
                     if concert.city != city { concert.city = city; changed = true }
                     if address != nil && concert.address != address { concert.address = address; changed = true }
@@ -205,6 +229,7 @@ actor ConcertSyncService {
                     externalId: extId,
                     title: item.title,
                     date: date,
+                    startTime: item.time == nil ? nil : date,
                     venue: venue,
                     city: city,
                     address: address,
@@ -231,7 +256,9 @@ actor ConcertSyncService {
         let rest = String(raw[colonRange.upperBound...])
         let parts = rest.split(separator: ",", maxSplits: 1).map { $0.trimmingCharacters(in: .whitespaces) }
         let venue = parts.first ?? rest
-        let address = parts.count > 1 ? parts[1] : nil
+        let address = parts.count > 1
+            ? parts[1].replacingOccurrences(of: ", Deutschland", with: "")
+            : nil
         return (city, venue, address)
     }
 
@@ -242,10 +269,15 @@ actor ConcertSyncService {
     /// der manuelle Button meldet sie weiterhin.
     @MainActor
     static func syncIfStale(context: ModelContext, minInterval: TimeInterval = 6 * 3600) async {
-        let last = UserDefaults.standard.object(forKey: lastSyncKey) as? Date
+        let defaults = UserDefaults.standard
+        // Bei geänderter Sync-Logik (Version hochzählen) einmalig sofort neu abrufen.
+        let versionKey = "concertSync.logicVersion"
+        let currentVersion = 2
+        let last = defaults.integer(forKey: versionKey) == currentVersion ? defaults.object(forKey: lastSyncKey) as? Date : nil
         if let last, Date.now.timeIntervalSince(last) < minInterval { return }
         if (try? await syncNow(context: context)) != nil {
-            UserDefaults.standard.set(Date.now, forKey: lastSyncKey)
+            defaults.set(Date.now, forKey: lastSyncKey)
+            defaults.set(currentVersion, forKey: versionKey)
         }
     }
 }

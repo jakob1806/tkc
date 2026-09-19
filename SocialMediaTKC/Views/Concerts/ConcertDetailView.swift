@@ -4,11 +4,15 @@ import SwiftData
 /// Konzertdetailseite mit "Content rund um dieses Konzert" (§4) und Content-Timeline (§10).
 struct ConcertDetailView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
     @Bindable var concert: Concert
     @Query private var templates: [ContentTemplate]
     @Query private var allSocialPosts: [SocialPost]
     @State private var showingTemplatePicker = false
     @State private var showingNewContent = false
+    @State private var showingEdit = false
+    @State private var confirmDelete = false
+    var settings = AppSettings.shared
 
     private var sortedContent: [ContentItem] {
         concert.contentItems.sorted { ($0.publishTime ?? $0.date) < ($1.publishTime ?? $1.date) }
@@ -126,6 +130,93 @@ struct ConcertDetailView: View {
         }
         .sheet(isPresented: $showingNewContent) {
             ContentEditorView(concert: concert)
+        }
+        .sheet(isPresented: $showingEdit) {
+            ConcertEditSheet(concert: concert)
+        }
+        .toolbar {
+            if settings.currentRole.canEdit {
+                ToolbarItem(placement: .primaryAction) {
+                    Menu {
+                        Button { showingEdit = true } label: { Label("Bearbeiten", systemImage: "pencil") }
+                        if concert.isManuallyEdited {
+                            Button {
+                                concert.isManuallyEdited = false
+                            } label: { Label("Wieder mit Website synchronisieren", systemImage: "arrow.triangle.2.circlepath") }
+                        }
+                        Button(role: .destructive) { confirmDelete = true } label: { Label("Konzert löschen", systemImage: "trash") }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                    .accessibilityLabel("Konzert-Aktionen")
+                }
+            }
+        }
+        .confirmationDialog("Konzert löschen?", isPresented: $confirmDelete, titleVisibility: .visible) {
+            Button("Löschen", role: .destructive) {
+                ConcertSyncService.markDeleted(externalId: concert.externalId)
+                context.delete(concert)
+                dismiss()
+            }
+        } message: {
+            Text("Geplanter Content bleibt erhalten, verliert aber die Konzert-Verknüpfung. Das Konzert wird beim Sync nicht neu angelegt.")
+        }
+    }
+}
+
+private struct ConcertEditSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Bindable var concert: Concert
+    @State private var originalDate: Date?
+
+    private func optional(_ keyPath: ReferenceWritableKeyPath<Concert, String?>) -> Binding<String> {
+        Binding(
+            get: { concert[keyPath: keyPath] ?? "" },
+            set: { concert[keyPath: keyPath] = $0.isEmpty ? nil : $0 }
+        )
+    }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Grunddaten") {
+                    TextField("Titel", text: $concert.title)
+                    DatePicker("Beginn", selection: Binding(
+                        get: { concert.startTime ?? concert.date },
+                        set: { concert.date = $0; concert.startTime = $0 }
+                    ))
+                    TextField("Veranstaltungsort", text: $concert.venue)
+                    TextField("Stadt", text: $concert.city)
+                    TextField("Adresse", text: optional(\.address))
+                }
+                Section("Programm & Mitwirkende") {
+                    TextField("Dirigent", text: optional(\.conductor))
+                    TextField("Ensemble", text: optional(\.ensemble))
+                    TextField("Programm", text: optional(\.program), axis: .vertical)
+                    TextField("Mitwirkende", text: optional(\.performers), axis: .vertical)
+                    TextField("Beschreibung", text: optional(\.concertDescription), axis: .vertical)
+                }
+                Section("Tickets") {
+                    TextField("Ticket-Link", text: optional(\.ticketURL))
+                        .keyboardType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                }
+            }
+            .navigationTitle("Konzert bearbeiten")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear { originalDate = concert.date }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Fertig") {
+                        concert.isManuallyEdited = true
+                        if let originalDate, originalDate != concert.date {
+                            ContentScheduler.resyncRelativeContent(for: concert)
+                        }
+                        dismiss()
+                    }
+                }
+            }
         }
     }
 }

@@ -12,14 +12,18 @@ struct ConcertListView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(filteredConcerts) { concert in
-                    NavigationLink {
-                        ConcertDetailView(concert: concert)
-                    } label: {
-                        ConcertRow(concert: concert)
+                if !upcoming.isEmpty {
+                    Section("Kommende Konzerte") {
+                        ForEach(upcoming) { concert in row(concert) }
+                    }
+                }
+                if !past.isEmpty {
+                    Section("Vergangene Konzerte") {
+                        ForEach(past) { concert in row(concert) }
                     }
                 }
             }
+            .refreshable { await sync() }
             .overlay {
                 if concerts.isEmpty {
                     ContentUnavailableView("Keine Konzerte", systemImage: "music.mic", description: Text("Tippe auf „Konzerte aktualisieren“, um von toelzerknabenchor.de zu synchronisieren."))
@@ -58,7 +62,24 @@ struct ConcertListView: View {
         }
     }
 
+    private var upcoming: [Concert] {
+        filteredConcerts.filter { !$0.isPast }.sorted { $0.date < $1.date }
+    }
+
+    private var past: [Concert] {
+        filteredConcerts.filter { $0.isPast }.sorted { $0.date > $1.date }
+    }
+
+    private func row(_ concert: Concert) -> some View {
+        NavigationLink {
+            ConcertDetailView(concert: concert)
+        } label: {
+            ConcertRow(concert: concert)
+        }
+    }
+
     private func sync() async {
+        guard !isSyncing else { return }
         isSyncing = true
         defer { isSyncing = false }
         do {
@@ -86,12 +107,12 @@ private struct ConcertRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(concert.title).font(.headline)
-                Text("\(concert.venue), \(concert.city)")
+                Text("\(concert.startTime.map { $0.formatted(date: .omitted, time: .shortened) + " · " } ?? "")\(concert.venue), \(concert.city)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 HStack(spacing: 8) {
                     if !concert.isPast {
-                        Text(concert.daysUntil == 0 ? "Heute" : "in \(concert.daysUntil) Tagen")
+                        Text(concert.daysUntilLabel)
                             .font(.caption)
                             .foregroundStyle(.orange)
                     }

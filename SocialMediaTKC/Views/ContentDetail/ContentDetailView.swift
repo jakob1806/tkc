@@ -8,6 +8,7 @@ struct ContentDetailView: View {
     @Bindable var item: ContentItem
     @Query private var allSocialPosts: [SocialPost]
     @State private var showingEditor = false
+    @State private var showingDuplicateHint = false
     var settings = AppSettings.shared
 
     /// §16 Contentplan-Verknüpfung: der Social Post, der auf diesen Content-Eintrag verweist.
@@ -75,6 +76,14 @@ struct ContentDetailView: View {
                     }
                 } else {
                     LabeledContent("Status", value: item.approvalStatus.displayName)
+                    if settings.currentRole.canEdit && (item.approvalStatus == .draft || item.approvalStatus == .changesNeeded) {
+                        Button {
+                            item.approvalStatus = .requested
+                            item.updatedAt = .now
+                        } label: {
+                            Label("Freigabe anfragen", systemImage: "paperplane")
+                        }
+                    }
                 }
                 if item.approvalStatus == .approved || item.approvalStatus == .requested {
                     if settings.currentRole.canApprove {
@@ -132,12 +141,26 @@ struct ContentDetailView: View {
         .toolbar {
             if settings.currentRole.canEdit {
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Bearbeiten") { showingEditor = true }
+                    Menu {
+                        Button { showingEditor = true } label: { Label("Bearbeiten", systemImage: "pencil") }
+                        Button {
+                            item.duplicate(in: context)
+                            showingDuplicateHint = true
+                        } label: { Label("Duplizieren", systemImage: "plus.square.on.square") }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                    .accessibilityLabel("Content-Aktionen")
                 }
             }
         }
         .sheet(isPresented: $showingEditor) {
             ContentEditorView(existingItem: item, concert: item.concert)
+        }
+        .alert("Dupliziert", isPresented: $showingDuplicateHint) {
+            Button("OK") {}
+        } message: {
+            Text("Die Kopie liegt als „Idee“ ohne festes Datum unter Mehr → Ideen.")
         }
     }
 

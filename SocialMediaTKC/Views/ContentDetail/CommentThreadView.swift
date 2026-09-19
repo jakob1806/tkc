@@ -7,6 +7,7 @@ struct CommentThreadView: View {
     @Environment(\.modelContext) private var context
     @Bindable var item: ContentItem
     @State private var newComment = ""
+    @State private var commentToDelete: Comment?
     var settings = AppSettings.shared
 
     var body: some View {
@@ -22,9 +23,9 @@ struct CommentThreadView: View {
                     Text(comment.text).font(.subheadline)
                 }
                 .padding(.vertical, 2)
-                .swipeActions {
-                    Button(role: .destructive) { context.delete(comment) } label: {
-                        Label("Löschen", systemImage: "trash")
+                .contextMenu {
+                    Button(role: .destructive) { commentToDelete = comment } label: {
+                        Label("Kommentar löschen", systemImage: "trash")
                     }
                 }
             }
@@ -43,6 +44,12 @@ struct CommentThreadView: View {
                     Image(systemName: "arrow.up.circle.fill")
                 }
                 .disabled(newComment.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+        }
+        .confirmationDialog("Kommentar löschen?", isPresented: Binding(get: { commentToDelete != nil }, set: { if !$0 { commentToDelete = nil } }), titleVisibility: .visible) {
+            Button("Löschen", role: .destructive) {
+                if let comment = commentToDelete { context.delete(comment) }
+                commentToDelete = nil
             }
         }
     }

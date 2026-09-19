@@ -108,6 +108,11 @@ enum ContentStatus: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    /// Fehlende Caption/Assets sind nur relevant, solange der Beitrag noch vorbereitet wird.
+    var needsPreparationWarnings: Bool {
+        self != .idea && self != .discarded && self != .published
+    }
+
     var displayName: String {
         switch self {
         case .idea: return "Idee"
