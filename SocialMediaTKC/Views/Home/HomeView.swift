@@ -188,12 +188,6 @@ private struct HeroCard: View {
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
-            LogoRing()
-                .frame(width: 150, height: 150)
-                .foregroundStyle(.white.opacity(0.10))
-                .offset(x: 34, y: -34)
-                .accessibilityHidden(true)
-
             VStack(alignment: .leading, spacing: 14) {
                 if let concert {
                     NavigationLink {

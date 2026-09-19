@@ -84,21 +84,3 @@ struct DateBadge: View {
         )
     }
 }
-
-/// Dekoratives Logo-Motiv (Ring mit zwei Punkten, angelehnt an das Ö im Chor-Logo).
-struct LogoRing: View {
-    var body: some View {
-        GeometryReader { geo in
-            let size = min(geo.size.width, geo.size.height)
-            ZStack {
-                Circle().stroke(lineWidth: size * 0.12)
-                HStack(spacing: size * 0.16) {
-                    Circle().frame(width: size * 0.13, height: size * 0.13)
-                    Circle().frame(width: size * 0.13, height: size * 0.13)
-                }
-                .offset(y: -size * 0.12)
-            }
-            .frame(width: size, height: size)
-        }
-    }
-}
