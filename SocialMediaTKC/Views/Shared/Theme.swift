@@ -3,20 +3,20 @@ import SwiftUI
 /// Zentrales Farbsystem, abgeleitet vom Rot des Tölzer-Knabenchor-Logos.
 /// Alle Farben passen sich Hell-/Dunkelmodus an.
 enum Theme {
-    static let brand = Color(light: 0xA2201A, dark: 0xEC584F)
-    static let brandDeep = Color(light: 0x6E1410, dark: 0x8F2620)
+    static let brand = Color(light: 0x952121, dark: 0xE2635C)
+    static let brandDeep = Color(light: 0x651313, dark: 0x8A2A26)
     static let gold = Color(light: 0xD99A1E, dark: 0xF2BC4B)
     static let background = Color(light: 0xFBF4EC, dark: 0x171112)
     static let card = Color(light: 0xFFFFFF, dark: 0x261C1D)
 
     static let heroGradient = LinearGradient(
-        colors: [Color(light: 0xB8281F, dark: 0xA92B23), Color(light: 0x5E100C, dark: 0x4A0E0B)],
+        colors: [Color(light: 0xA52727, dark: 0x9C2E2A), Color(light: 0x5C1010, dark: 0x4A1210)],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
 
     static let buttonGradient = LinearGradient(
-        colors: [Color(light: 0xC22F25, dark: 0xF06A5F), Color(light: 0x8E1A14, dark: 0xC13A31)],
+        colors: [Color(light: 0xA92828, dark: 0xE87068), Color(light: 0x7C1919, dark: 0xB8403A)],
         startPoint: .top,
         endPoint: .bottom
     )
