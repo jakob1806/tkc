@@ -164,9 +164,20 @@ struct ContentEditorView: View {
         let resolvedPublishTime: Date? = (isUnplanned || !hasPublishTime) ? nil : combinedPublishTime()
         let resolvedDate = isUnplanned ? .now : date
         if let existingItem {
+            let cal = Calendar.current
+            let dateChanged = !cal.isDate(existingItem.date, inSameDayAs: resolvedDate)
+            let timeChanged: Bool
+            switch (existingItem.publishTime, resolvedPublishTime) {
+            case (nil, nil): timeChanged = false
+            case let (old?, new?): timeChanged = cal.compare(old, to: new, toGranularity: .minute) != .orderedSame
+            default: timeChanged = true
+            }
+            let timingChanged = dateChanged || timeChanged
             existingItem.title = title
-            existingItem.date = resolvedDate
-            existingItem.publishTime = resolvedPublishTime
+            if timingChanged {
+                existingItem.date = resolvedDate
+                existingItem.publishTime = resolvedPublishTime
+            }
             existingItem.isUnplanned = isUnplanned
             existingItem.platform = platform
             existingItem.contentType = contentType
@@ -181,8 +192,9 @@ struct ContentEditorView: View {
             existingItem.notes = notes.isEmpty ? nil : notes
             existingItem.links = links.isEmpty ? nil : links
             existingItem.updatedAt = .now
-            // Manuelle Bearbeitung entkoppelt vom automatischen Nachziehen bei Terminverschiebung.
-            existingItem.relativeOffset = nil
+            // Nur eine manuell geänderte Terminierung entkoppelt vom automatischen Nachziehen
+            // bei Konzertverschiebungen - Caption-/Status-Änderungen lassen die Bindung bestehen.
+            if timingChanged { existingItem.relativeOffset = nil }
         } else {
             let item = ContentItem(
                 title: title,

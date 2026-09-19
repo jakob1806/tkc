@@ -49,16 +49,20 @@ enum ContentScheduler {
     }
 
     static func itemsTooClose(items: [ContentItem], minimumGapMinutes: Int = 30) -> [(ContentItem, ContentItem)] {
-        let sorted = items.compactMap { item -> (ContentItem, Date)? in
-            guard let t = item.publishTime else { return nil }
-            return (item, t)
-        }.sorted { $0.1 < $1.1 }
-
+        // Nur kommende, noch nicht veröffentlichte Items pro Plattform vergleichen - zwei
+        // Posts auf verschiedenen Kanälen zur selben Zeit sind kein Konflikt.
         var pairs: [(ContentItem, ContentItem)] = []
-        for i in 1..<max(sorted.count, 1) where i < sorted.count {
-            let gap = sorted[i].1.timeIntervalSince(sorted[i - 1].1)
-            if gap < Double(minimumGapMinutes * 60) {
-                pairs.append((sorted[i - 1].0, sorted[i].0))
+        let upcoming = items.filter { $0.status != .published && $0.status != .discarded && ($0.publishTime ?? .distantPast) > .now }
+        for (_, group) in Dictionary(grouping: upcoming, by: \.platform) {
+            let sorted = group.compactMap { item -> (ContentItem, Date)? in
+                guard let t = item.publishTime else { return nil }
+                return (item, t)
+            }.sorted { $0.1 < $1.1 }
+            for i in sorted.indices.dropFirst() {
+                let gap = sorted[i].1.timeIntervalSince(sorted[i - 1].1)
+                if gap < Double(minimumGapMinutes * 60) {
+                    pairs.append((sorted[i - 1].0, sorted[i].0))
+                }
             }
         }
         return pairs

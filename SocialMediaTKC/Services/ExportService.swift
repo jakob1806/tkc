@@ -105,17 +105,29 @@ enum ExportService {
             title.draw(at: CGPoint(x: margin, y: y), withAttributes: [.font: titleFont])
             y += 30
 
+            let contentWidth = pageWidth - 2 * margin
             let lines = text.components(separatedBy: "\n")
             for line in lines {
-                if y > pageHeight - margin {
+                let isHeading = line.count < 12 && !line.contains(":") && !line.isEmpty && !line.contains(".")
+                let attributes: [NSAttributedString.Key: Any] = [.font: isHeading ? UIFont.boldSystemFont(ofSize: 12) : bodyFont]
+                let measured = (line as NSString).boundingRect(
+                    with: CGSize(width: contentWidth, height: .greatestFiniteMagnitude),
+                    options: [.usesLineFragmentOrigin, .usesFontLeading],
+                    attributes: attributes,
+                    context: nil
+                )
+                let height = max(ceil(measured.height), 16)
+                if y + height > pageHeight - margin {
                     context.beginPage()
                     y = margin
                 }
-                let attributes: [NSAttributedString.Key: Any] = line.count < 12 && !line.contains(":") && !line.isEmpty && !line.contains(".")
-                    ? [.font: UIFont.boldSystemFont(ofSize: 12)]
-                    : [.font: bodyFont]
-                line.draw(at: CGPoint(x: margin, y: y), withAttributes: attributes)
-                y += 16
+                (line as NSString).draw(
+                    with: CGRect(x: margin, y: y, width: contentWidth, height: height),
+                    options: [.usesLineFragmentOrigin, .usesFontLeading],
+                    attributes: attributes,
+                    context: nil
+                )
+                y += height + 2
             }
         }
     }

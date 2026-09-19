@@ -9,6 +9,8 @@ struct AssetListView: View {
     @State private var showingAddAsset = false
     @State private var photosPickerItem: PhotosPickerItem?
     @State private var isImportingPhoto = false
+    @State private var assetToDelete: Asset?
+    @State private var importError: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -24,18 +26,22 @@ struct AssetListView: View {
                         Image(systemName: asset.type.symbol)
                             .frame(width: 32, height: 32)
                     }
-                    Text(asset.title)
+                    if let link = asset.externalURL, let url = URL(string: link) {
+                        Link(asset.title, destination: url)
+                    } else {
+                        Text(asset.title)
+                    }
+                    Spacer()
                     if asset.hasEmbeddedMedia {
-                        Spacer()
                         Text("importiert").font(.caption2).foregroundStyle(.secondary)
                     }
-                }
-                .swipeActions {
                     Button(role: .destructive) {
-                        context.delete(asset)
+                        assetToDelete = asset
                     } label: {
-                        Label("Löschen", systemImage: "trash")
+                        Image(systemName: "trash")
                     }
+                    .buttonStyle(.borderless)
+                    .accessibilityLabel("Asset löschen")
                 }
             }
 
@@ -57,12 +63,36 @@ struct AssetListView: View {
         .sheet(isPresented: $showingAddAsset) {
             AddAssetSheet(item: item)
         }
+        .confirmationDialog("Asset löschen?", isPresented: Binding(get: { assetToDelete != nil }, set: { if !$0 { assetToDelete = nil } }), titleVisibility: .visible) {
+            Button("Löschen", role: .destructive) {
+                if let asset = assetToDelete { context.delete(asset) }
+                assetToDelete = nil
+            }
+        }
+        .alert("Import fehlgeschlagen", isPresented: Binding(get: { importError != nil }, set: { if !$0 { importError = nil } })) {
+            Button("OK") { importError = nil }
+        } message: {
+            Text(importError ?? "")
+        }
     }
 
     private func importPhoto(_ pickerItem: PhotosPickerItem) async {
         isImportingPhoto = true
-        defer { isImportingPhoto = false }
-        guard let data = try? await pickerItem.loadTransferable(type: Data.self) else { return }
+        defer {
+            isImportingPhoto = false
+            photosPickerItem = nil
+        }
+        let data: Data
+        do {
+            guard let loaded = try await pickerItem.loadTransferable(type: Data.self) else {
+                importError = "Die Datei konnte nicht geladen werden."
+                return
+            }
+            data = loaded
+        } catch {
+            importError = error.localizedDescription
+            return
+        }
         let isVideo = pickerItem.supportedContentTypes.contains { $0.conforms(to: .movie) }
         let asset = Asset(
             type: isVideo ? .video : .photo,
@@ -72,7 +102,6 @@ struct AssetListView: View {
         )
         asset.contentItem = item
         context.insert(asset)
-        photosPickerItem = nil
     }
 }
 

@@ -27,6 +27,8 @@ enum AppRole: String, CaseIterable, Identifiable, Codable {
     var canEdit: Bool { self != .viewer }
     var canApprove: Bool { self == .approver }
     var canDelete: Bool { self != .viewer }
+    /// Destruktive Massenaktionen (z.B. alle Daten zurücksetzen) nur für Freigeber.
+    var canResetData: Bool { self == .approver }
 }
 
 /// Zentrale, app-weite Einstellungen (Rolle, Anzeigename, Supabase-Konfiguration).
@@ -47,7 +49,11 @@ final class AppSettings {
     }
 
     var supabaseAnonKey: String {
-        didSet { UserDefaults.standard.set(supabaseAnonKey, forKey: Keys.supabaseAnonKey) }
+        didSet { KeychainStore.write(supabaseAnonKey, for: Keys.supabaseAnonKey) }
+    }
+
+    var remindersEnabled: Bool {
+        didSet { UserDefaults.standard.set(remindersEnabled, forKey: Keys.remindersEnabled) }
     }
 
     var teamSyncEnabled: Bool {
@@ -57,7 +63,7 @@ final class AppSettings {
     /// Für den "Chor Assistant" (§KI-Konzept). Wird ausschließlich lokal auf dem Gerät
     /// eingegeben und gespeichert - verlässt das Gerät nur direkt Richtung Gemini-API.
     var geminiAPIKey: String {
-        didSet { UserDefaults.standard.set(geminiAPIKey, forKey: Keys.geminiAPIKey) }
+        didSet { KeychainStore.write(geminiAPIKey, for: Keys.geminiAPIKey) }
     }
 
     /// Social Analytics (§29): URL des eigenen Backends, das die OAuth-Tokens hält und die
@@ -86,6 +92,7 @@ final class AppSettings {
         static let supabaseURL = "appSettings.supabaseURL"
         static let supabaseAnonKey = "appSettings.supabaseAnonKey"
         static let teamSyncEnabled = "appSettings.teamSyncEnabled"
+        static let remindersEnabled = "appSettings.remindersEnabled"
         static let geminiAPIKey = "appSettings.geminiAPIKey"
         static let socialBackendURL = "appSettings.socialAnalyticsBackendURL"
         static let syncUnder48h = "appSettings.socialSyncIntervalUnder48h"
@@ -94,14 +101,27 @@ final class AppSettings {
         static let syncOver30Days = "appSettings.socialSyncIntervalOver30Days"
     }
 
+    /// Liest ein Geheimnis aus der Keychain; ein früher in UserDefaults abgelegter Wert wird
+    /// einmalig übernommen und aus UserDefaults entfernt.
+    private static func migratedSecret(_ key: String, defaults: UserDefaults) -> String {
+        if let stored = KeychainStore.read(key) { return stored }
+        if let legacy = defaults.string(forKey: key), !legacy.isEmpty {
+            KeychainStore.write(legacy, for: key)
+            defaults.removeObject(forKey: key)
+            return legacy
+        }
+        return ""
+    }
+
     private init() {
         let defaults = UserDefaults.standard
         currentRole = AppRole(rawValue: defaults.string(forKey: Keys.role) ?? "") ?? .editor
         displayName = defaults.string(forKey: Keys.displayName) ?? ""
         supabaseURL = defaults.string(forKey: Keys.supabaseURL) ?? ""
-        supabaseAnonKey = defaults.string(forKey: Keys.supabaseAnonKey) ?? ""
+        supabaseAnonKey = Self.migratedSecret(Keys.supabaseAnonKey, defaults: defaults)
         teamSyncEnabled = defaults.bool(forKey: Keys.teamSyncEnabled)
-        geminiAPIKey = defaults.string(forKey: Keys.geminiAPIKey) ?? ""
+        remindersEnabled = defaults.bool(forKey: Keys.remindersEnabled)
+        geminiAPIKey = Self.migratedSecret(Keys.geminiAPIKey, defaults: defaults)
         socialAnalyticsBackendURL = defaults.string(forKey: Keys.socialBackendURL) ?? ""
         socialSyncIntervalUnder48h = defaults.object(forKey: Keys.syncUnder48h) as? Double ?? 2
         socialSyncInterval2to7Days = defaults.object(forKey: Keys.sync2to7Days) as? Double ?? 6

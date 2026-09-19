@@ -22,6 +22,7 @@ struct ContentBoardView: View {
                 }
                 .padding()
             }
+            .background(Theme.background.ignoresSafeArea())
             .navigationTitle("Board")
             .sheet(item: $newContentStatus) { status in
                 ContentEditorView(concert: nil, initialStatus: status)
@@ -39,9 +40,12 @@ private struct BoardColumn: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Circle().fill(status.color).frame(width: 8, height: 8)
-                Text(status.displayName).font(.headline)
-                Text("\(items.count)").font(.caption).foregroundStyle(.secondary)
+                Text(status.displayName).font(.headline).foregroundStyle(status.color)
+                Text("\(items.count)")
+                    .font(.caption.weight(.bold))
+                    .padding(.horizontal, 7).padding(.vertical, 2)
+                    .background(status.color.opacity(0.18), in: Capsule())
+                    .foregroundStyle(status.color)
                 Spacer()
                 Button {
                     onAdd()
@@ -61,31 +65,35 @@ private struct BoardColumn: View {
                             BoardCard(item: item)
                         }
                         .buttonStyle(.plain)
-                        .contextMenu {
-                            Menu("Verschieben nach") {
-                                ForEach(ContentStatus.allCases.filter { $0 != status }) { target in
-                                    Button(target.displayName) { item.status = target }
-                                }
-                            }
-                        }
-                        .swipeActions(edge: .trailing) {
+                        .overlay(alignment: .bottomTrailing) {
                             if let next = ContentStatus.boardColumns.next(after: status) {
                                 Button {
                                     item.status = next
                                 } label: {
-                                    Label(next.displayName, systemImage: "arrow.right")
+                                    Image(systemName: "arrow.right.circle.fill")
+                                        .font(.title3)
+                                        .foregroundStyle(next.color)
+                                        .padding(6)
                                 }
-                                .tint(next.color)
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Verschieben nach \(next.displayName)")
                             }
                         }
-                        .swipeActions(edge: .leading) {
-                            if let previous = ContentStatus.boardColumns.previous(before: status) {
-                                Button {
-                                    item.status = previous
-                                } label: {
-                                    Label(previous.displayName, systemImage: "arrow.left")
+                        .contextMenu {
+                            if let next = ContentStatus.boardColumns.next(after: status) {
+                                Button { item.status = next } label: {
+                                    Label("Weiter: \(next.displayName)", systemImage: "arrow.right")
                                 }
-                                .tint(previous.color)
+                            }
+                            if let previous = ContentStatus.boardColumns.previous(before: status) {
+                                Button { item.status = previous } label: {
+                                    Label("Zurück: \(previous.displayName)", systemImage: "arrow.left")
+                                }
+                            }
+                            Menu("Verschieben nach") {
+                                ForEach(ContentStatus.allCases.filter { $0 != status }) { target in
+                                    Button(target.displayName) { item.status = target }
+                                }
                             }
                         }
                     }
@@ -94,7 +102,12 @@ private struct BoardColumn: View {
         }
         .padding(10)
         .frame(width: 240)
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .background(status.color.opacity(0.10), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(alignment: .top) {
+            UnevenRoundedRectangle(topLeadingRadius: 14, topTrailingRadius: 14)
+                .fill(status.color)
+                .frame(height: 4)
+        }
     }
 }
 

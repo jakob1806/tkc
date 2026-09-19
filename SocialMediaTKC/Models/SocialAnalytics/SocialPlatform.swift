@@ -32,7 +32,7 @@ enum SocialPlatform: String, Codable, CaseIterable, Identifiable {
         switch self {
         case .instagram: return .pink
         case .facebook: return .blue
-        case .tiktok: return .black
+        case .tiktok: return .primary
         case .youtube: return .red
         }
     }

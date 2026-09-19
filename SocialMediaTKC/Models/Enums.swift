@@ -51,7 +51,7 @@ enum Platform: String, Codable, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .instagram, .instagramStory, .instagramReel: return .pink
-        case .tiktok: return .black
+        case .tiktok: return .primary
         case .youtube, .youtubeShorts: return .red
         case .whatsapp: return .green
         case .website: return .indigo
@@ -107,6 +107,11 @@ enum ContentStatus: String, Codable, CaseIterable, Identifiable {
     case idea, planned, materialMissing, inProgress, approvalNeeded, approved, scheduled, published, discarded
 
     var id: String { rawValue }
+
+    /// Fehlende Caption/Assets sind nur relevant, solange der Beitrag noch vorbereitet wird.
+    var needsPreparationWarnings: Bool {
+        self != .idea && self != .discarded && self != .published
+    }
 
     var displayName: String {
         switch self {

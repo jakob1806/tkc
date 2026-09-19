@@ -80,6 +80,14 @@ struct CalendarWeekView: View {
                             }
                             Spacer()
                             Text(day.formatted(Date.FormatStyle(locale: .german).day().month(.abbreviated)))
+                            Button {
+                                newContentDay = day
+                                showingNewContent = true
+                            } label: {
+                                Image(systemName: "plus.circle")
+                            }
+                            .buttonStyle(.borderless)
+                            .accessibilityLabel("Content am \(day.formatted(date: .abbreviated, time: .omitted)) hinzufügen")
                         }
                     }
                     .contextMenu {
@@ -96,7 +104,7 @@ struct CalendarWeekView: View {
         .navigationTitle("Woche")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingNewContent) {
-            ContentEditorView(concert: nil)
+            ContentEditorView(concert: nil, initialDate: newContentDay)
         }
     }
 

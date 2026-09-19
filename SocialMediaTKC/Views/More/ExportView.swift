@@ -14,7 +14,15 @@ struct ExportView: View {
     @State private var csvURL: IdentifiableURL?
 
     private var itemsInRange: [ContentItem] {
-        allItems.filter { !$0.isUnplanned && $0.date >= startDate && $0.date <= endDate }
+        // "Bis" ist inklusiv: der gesamte Endtag zählt mit (Items tragen eine Uhrzeit).
+        let cal = Calendar.current
+        let start = cal.startOfDay(for: startDate)
+        let endExclusive = cal.date(byAdding: .day, value: 1, to: cal.startOfDay(for: endDate)) ?? endDate
+        return allItems.filter {
+            guard !$0.isUnplanned else { return false }
+            let day = $0.publishTime ?? $0.date
+            return day >= start && day < endExclusive
+        }
     }
 
     var body: some View {
